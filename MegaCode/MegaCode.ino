@@ -136,10 +136,13 @@ static void scan()
           //Send the packet  
           mystr[0] = code_map[(current * NUM_BTN_ROWS) + j];
           mystr[1] = 'D'; 
-          Serial.write(mystr, 2); 
-          Serial.write("\n"); 
-          Serial.flush();
-          LED_outputs[current][j]++;          
+          Serial1.write(mystr, 2); 
+          Serial1.flush();
+          LED_outputs[current][j]++;        
+
+         // Serial.write(mystr, 2); 
+          //Serial.write("\n"); 
+          //Serial.flush();
         }
       }
     }
@@ -153,9 +156,12 @@ static void scan()
         {
           mystr[0] = code_map[(current * NUM_BTN_ROWS) + j];
           mystr[1] = 'U'; 
-          Serial.write(mystr, 2); 
-          Serial.write("\n"); 
-          Serial.flush();
+          Serial1.write(mystr, 2);  
+          Serial1.flush();
+
+          //Serial.write(mystr, 2); 
+          //Serial.write("\n"); 
+          //Serial.flush();
         }
       }
     }
@@ -185,6 +191,8 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(9600);
+
+  //Start USART serial communication
   Serial1.begin(115200);
   
   Serial.print("Starting Setup...");
