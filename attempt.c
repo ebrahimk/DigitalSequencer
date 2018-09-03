@@ -1,28 +1,11 @@
 
-/******************************************************************************
-rgb-plus-buttons.ino
-Byron Jacquot @ SparkFun Electronics
-1/6/2015
-
-Example to drive the RGB LEDs and scan the buttons of the RGB button pad.
-
-Exercise 3 in a series of 3.
-https://learn.sparkfun.com/tutorials/button-pad-hookup-guide/exercise-3-rgb-leds-and-buttons
-
-Development environment specifics:
-Developed in Arduino 1.6.5
-For an Arduino Mega 2560
-
-This code is released under the [MIT License](http://opensource.org/licenses/MIT).
-
-Distributed as-is; no warranty is given.
-******************************************************************************/         
 //config variables
 #define NUM_LED_COLUMNS (4)
 #define NUM_LED_ROWS (4)
 #define NUM_BTN_COLUMNS (4)
 #define NUM_BTN_ROWS (4)
 #define NUM_COLORS (3)
+#define NUM_COM_BITS (4)
 
 #define MAX_DEBOUNCE (3)
 
@@ -30,12 +13,36 @@ Distributed as-is; no warranty is given.
 static uint8_t LED_outputs[NUM_LED_COLUMNS][NUM_LED_ROWS];
 static int32_t next_scan;
 
+//SWT-GND
 static const uint8_t btnselpins[4]   = {26,22,25,29};
+
+//Switch
 static const uint8_t btnreadpins[4] = {32,33,30,31};
+
+//LED-GND (Good)
 static const uint8_t ledselpins[4]   = {28, 24, 23, 27};
 
-// RGB pins for each of 4 rows 
-static const uint8_t colorpins[4][3] = {{11,13, 12}, {8,10,9},{5,7,6},{2,4,3}};
+
+
+// RGB pins for each of 4 rows
+static const uint8_t colorpins[4][3] = {{13,11,12}, {10,8,9},{7,5,6},{4,2,3}};
+
+static const uint8_t    color_mappings[14][3] = {
+                      //{255,255,255},  //none1
+                      {255,0,0}, //Red2
+                      {255,125,0}, //Orange3
+                      {255,255,0}, //Yellow4
+                      {125,255,0}, //Spring Green5
+                      {0,255,0},  //Green6
+                      {0,255,125}, //Turquiose7
+                      {0,255,255}, //Cyan8
+                      {0,125,255}, //Ocean9
+                      {0,0,255},  //Blue10
+                      {138,43,226}, //Dark violet11
+                      {125,0,255}, //Violet12
+                      {255,0,255}, //Magenta13
+                      {255,0,125}};  //Rasberry14
+
 
 
 static int8_t debounce_count[NUM_BTN_COLUMNS][NUM_BTN_ROWS];
@@ -99,12 +106,11 @@ static void scan()
 
     for(i = 0; i < NUM_LED_ROWS; i++)
     {
-        uint8_t val = (LED_outputs[current][i] & 0x03);
+        uint8_t val = (LED_outputs[current][i] % 13);
 
-        if(val)
-        {
-            digitalWrite(colorpins[i][val-1], HIGH);
-        }
+            analogWrite(colorpins[i][0], color_mappings[val][0]);
+            analogWrite(colorpins[i][1], color_mappings[val][1]);
+            analogWrite(colorpins[i][2], color_mappings[val][2]);
   }
 
 
@@ -124,8 +130,14 @@ static void scan()
         {
           Serial.print("Key Down ");
           Serial.println((current * NUM_BTN_ROWS) + j);
-
           LED_outputs[current][j]++;
+
+
+          uint8_t value = (current * NUM_BTN_ROWS) + j;
+          //Transmit code on serial3
+
+           Serial.println("1");
+
         }
       }
     }
@@ -139,6 +151,7 @@ static void scan()
         {
           Serial.print("Key Up ");
           Serial.println((current * NUM_BTN_ROWS) + j);
+            uint8_t value = (current * NUM_BTN_ROWS) + j;
         }
       }
     }
@@ -164,10 +177,13 @@ static void scan()
   }
 }
 
-void setup() 
+void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(115200);
+
+  //Info transfer baudrate
+  Serial3.begin(115200);
 
   Serial.print("Starting Setup...");
 
@@ -197,4 +213,3 @@ void loop() {
     scan();
   }
 }
-
