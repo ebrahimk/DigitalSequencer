@@ -37,7 +37,7 @@ static const uint8_t    color_mappings[14][3] = {
                       {0,255,255}, //Cyan8
                       {0,125,255}, //Ocean9
                       {0,0,255},  //Blue10
-                      {138,43,226}, //Dark violet11
+                      {138,43,226}, //Darek violet11
                       {125,0,255}, //Violet12
                       {255,0,255}, //Magenta13
                       {255,0,125},  //Rasberry14
@@ -140,9 +140,9 @@ static void scan()
           Serial1.flush();
           LED_outputs[current][j]++;        
 
-         // Serial.write(mystr, 2); 
-          //Serial.write("\n"); 
-          //Serial.flush();
+          Serial.write(mystr, 2); 
+          Serial.write("\n"); 
+          Serial.flush();
         }
       }
     }
@@ -159,9 +159,9 @@ static void scan()
           Serial1.write(mystr, 2);  
           Serial1.flush();
 
-          //Serial.write(mystr, 2); 
-          //Serial.write("\n"); 
-          //Serial.flush();
+          Serial.write(mystr, 2); 
+          Serial.write("\n"); 
+          Serial.flush();
         }
       }
     }
@@ -216,7 +216,6 @@ void setup()
 
 void loop() {
   // put your main code here, to run repeatedly:
-
   if(millis() >= next_scan)
   {
     next_scan = millis()+1;
