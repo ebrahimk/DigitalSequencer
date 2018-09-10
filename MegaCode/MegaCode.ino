@@ -7,7 +7,7 @@
 #define NUM_COLORS (3)
 #define NUM_COM_BITS (4)
 
-#define MAX_DEBOUNCE (3)
+#define MAX_DEBOUNCE (6)
 
 //Communication Buffer
 char mystr[2]; //Byte one says the button, byte two determine the "UP" or "DOWN" state. 
@@ -112,7 +112,8 @@ static void scan()
     for(i = 0; i < NUM_LED_ROWS; i++)
     {
         uint8_t val = (LED_outputs[current][i] % 13);
-
+            //Serial.print("This is val:");
+           // Serial.println(val);
             analogWrite(colorpins[i][0], color_mappings[val][0]);
             analogWrite(colorpins[i][1], color_mappings[val][1]);
             analogWrite(colorpins[i][2], color_mappings[val][2]);

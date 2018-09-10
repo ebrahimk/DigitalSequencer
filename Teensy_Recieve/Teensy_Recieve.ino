@@ -22,7 +22,8 @@ AudioConnection          patchCord5(mixer1, 0, audioOutput, 0);
 AudioConnection          patchCord6(mixer1, 0, audioOutput, 1);
 */
 
-/***************************************/
+
+/****AUDIO CONNECTIONS*****/
 AudioPlaySdWav           playSdWav4;     //xy=144.00571060180664,407.4602851867676
 AudioPlaySdWav           playSdWav1;     //xy=145.0057029724121,289.46025562286377
 AudioPlaySdWav           playSdWav8;     //xy=144.0056915283203,565.4601669311523
@@ -98,10 +99,15 @@ AudioConnection          patchCord39(mixer9, 0, i2s1, 0);
 AudioConnection          patchCord40(mixer10, 0, i2s1, 1);
 
 
-/***************************************/
+/**********ANALOG PINS**********/
+
+void read_pin(int pin_num, int* num){ 
+      *num=map(analogRead(pin_num), 530, 1023, 0, 1023);
+}
 
 
 
+/**********SETUP CONFIG**********/
 
 #define SDCARD_CS_PIN    10
 #define SDCARD_MOSI_PIN  7
@@ -117,12 +123,20 @@ const char* code_mapStr[] =
   };
 char mystr[2]; //Initialized variable to store recieved data
 
+//INITIALIZE ANALOG PINS
+//Break it into states I think. So 
 
-void setup() {
-  Serial6.begin(115200);
-  Serial.begin(115200);
- 
+int pot_pins_mode[11] = {10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24};
+int pot_pins_uni[11] = {10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24};
+
+
+int led_pins[6] ={16 ,17, 18, 19, 29, 30};
   
+void setup() {
+
+  //ENABLE SERIAL COMMUNICATION 
+  Serial6.begin(115200);
+  Serial.begin(1200);
   Serial.println("Teensy Com Port");
   AudioMemory(8);
   sgtl5000_1.enable();
@@ -137,7 +151,8 @@ void setup() {
   }
   pinMode(13, OUTPUT); // LED on pin 13
   delay(1000);
-  
+
+  //CONFIGURE REPLAY ARRAY
   for(int i =0; i< 15; i++){
      replay[i] = 0;
   }
@@ -145,14 +160,24 @@ void setup() {
 
 
 void loop() {
+  //READ IN STATE CHANGES FROM POTENTIOMETERS
+
+  
+  int num;
+  read_pin(pot_pins_mode[1], &num);
+  Serial.println(num);
+
+
+  /*
   Serial.write(mystr, 2);
   Serial6.readBytes(mystr,2); 
   Serial.write(mystr,2); 
   Serial.write("\n");
   Serial6.flush();
 
-//IDEA --> Loop through the
-//Keep track and keep playing the file until the up command enters the buffer...
+
+
+
  
   for(int i = 0; i < 15; i++){ 
     if (((code_map_D[i][0] == mystr[0] )&&(code_map_D[i][1] == mystr[1])) || (replay[i] == 1)){   
@@ -164,5 +189,7 @@ void loop() {
           replay[i] = 0; 
           playSdWavArray[i]->stop();
     }
-  }    
+  }  */ 
+    
 }
+
