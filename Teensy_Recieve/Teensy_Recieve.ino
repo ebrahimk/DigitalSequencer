@@ -83,21 +83,58 @@ AudioConnection          patchCord39(mixer9, 0, i2s1, 0);
 AudioConnection          patchCord40(mixer10, 0, i2s1, 1);
 
 
-/**********ANALOG PINS**********/
+/**********111111**********/
 //perhps I should configure 11 structures representing my analog potentiometers and configure an array of pointers to those structures, so we can perform the proper mapping type.... (YES)
 //Potentiometers are labelled left to right starting with the array on the left....
-struct pot{
+struct Pot{
    int pin_num; 
    int min_val; 
 };
 
-//struct pot Pot1 = {
+/*
+  
+  mapping _ min_val
+ * 1: 11 ----- 502    65
+ * 2: 24 ----- 500    (Normal pin: 50)  50 
+ * 3: 10 ----- 530    64
+ * 4: 22 ----- 523   NO NORMAL PIN
+ * 5: 23 ----- 500 (Normal pin: 49) 49
+ * 6: 15 ----- 530  (Normal pin: 34)  34
+ * 7: 14   ----- 515 (Normal pin: 33) 33
+ * 8: 20 ----- 520  (NOrmal pin: 39) 39
+ * 9: 21 ----- 473   66
+ * 10: 12  ----- 520  31
+ * 11: 13  ----- 515   32
+ */
 
+struct Pot pot1 = { .pin_num = 65, .min_val = 502};
+struct Pot pot2 = { .pin_num = 50, .min_val = 500};
+struct Pot pot3 = { .pin_num = 64, .min_val = 530};
+struct Pot pot4 = { .pin_num = 67, .min_val = 523};
+struct Pot pot5 = { .pin_num = 49, .min_val = 500};
+struct Pot pot6 = { .pin_num = 34, .min_val = 530};
+struct Pot pot7 = { .pin_num = 33, .min_val = 515};
+struct Pot pot8 = { .pin_num = 39, .min_val = 520};
+struct Pot pot9 = { .pin_num = 66, .min_val = 473};
+struct Pot pot10 = {.pin_num = 31, .min_val = 520};
+struct Pot pot11 = { .pin_num = 32, .min_val = 515};
 
-void read_pin(char* pin_num, int* num){ 
-      *num = analogRead(*pin_num);
-      //*num=map(analogRead(pin_num), 530, 1023, 0, 1023);
+struct Pot* analog_pins[11] ={&pot1, &pot2, &pot3, &pot4, &pot5, &pot6, &pot7, &pot8, &pot9, &pot10, &pot11 };
+
+//int analog_pins[11] ={65, 50, 64, 67, 49, 34, 33, 39, 66, 31, 32};
+
+int led_pins[6] ={16 ,17, 18, 19, 29, 30};
+
+void read_pin(struct Pot* pot, int* num){  
+      *num=map(analogRead(pot->pin_num), pot->min_val, 1023, 0, 1023);
 }
+
+/*
+void read_pin(int pin_num, int* num){  
+      *num=map(analogRead(pin_num), 530, 1023, 0, 1023);
+}
+*/
+
 /**********SETUP CONFIG**********/
 
 #define SDCARD_CS_PIN    10
@@ -112,27 +149,12 @@ const char* code_mapStr[] =
   { "c3.wav", "d3.wav", "e3.wav", "f3.wav", "g3.wav", "a3.wav", "b3.wav", "c4.wav", "d4.wav", 
     "e4.wav", "f4.wav", "g4.wav", "a4.wav", "b4.wav", "c5.wav", "d5.wav"
   };
+
+  
 char mystr[2]; //Initialized variable to store recieved data
 
-//INITIALIZE ANALOG PINS
-int pot_pins[11] = {11, 33, 12, 13, 10, 34, 39, 21, 22, 23, 24};
-//analkog pins 10, 11, 22, 21, can only be accessed by explicitly calling the string "A.."
-/* mapping _ min_val
- * 1: 11 ----- 502 
- * 2: 24 ----- 500
- * 3: 10 ----- 530
- * 4: 22 ----- 523
- * 5: 23 ----- 500
- * 6: 15 ----- 530  (Normal pin: 34)
- * 7: 14   ----- 515 (Normal pin: 33)
- * 8: 20 ----- 520  (NOrmal pin: 39)
- * 9: 21 ----- 473 NO NORMAL PIN
- * 10: 12  ----- 520
- * 11: 13  ----- 515
- */
- char* analog_pins[3] ={"A10", "A12", "A13"};
 
-int led_pins[6] ={16 ,17, 18, 19, 29, 30};
+
   
 void setup() {
 
@@ -164,24 +186,51 @@ void setup() {
 void loop() {
   //READ IN STATE CHANGES FROM POTENTIOMETERS
 
-  
+  /* TESTING ANALOG PINS */
   int num;
   read_pin(analog_pins[0], &num);
+    Serial.print("A");
+  Serial.println( num);
+  read_pin(analog_pins[1], &num);
+    Serial.print("B");
   Serial.println(num);
-  delay(100);
+  read_pin(analog_pins[2], &num);
+    Serial.print("C");
+  Serial.println(num);
+  read_pin(analog_pins[3], &num);
+    Serial.print("D");
+  Serial.println(num);
+  read_pin(analog_pins[4], &num);
+    Serial.print("E");
+  Serial.println(num);
+  read_pin(analog_pins[5], &num);
+    Serial.print("F");
+  Serial.println(num);
+  read_pin(analog_pins[6], &num);
+    Serial.print("G");
+  Serial.println(num);
+  read_pin(analog_pins[7], &num);
+    Serial.print("H");
+  Serial.println(num);
+  read_pin(analog_pins[8], &num);
+    Serial.print("i");
+  Serial.println(num);
+  read_pin(analog_pins[9], &num);
+    Serial.print("j");
+  Serial.println(num);
+  read_pin(analog_pins[10], &num);
+    Serial.print("k");
+  Serial.println(num);
+    Serial.println("---------------------");
+  delay(1000);
 
-
-  /*
+/*
   Serial.write(mystr, 2);
   Serial6.readBytes(mystr,2); 
   Serial.write(mystr,2); 
   Serial.write("\n");
   Serial6.flush();
 
-
-
-
- 
   for(int i = 0; i < 15; i++){ 
     if (((code_map_D[i][0] == mystr[0] )&&(code_map_D[i][1] == mystr[1])) || (replay[i] == 1)){   
           replay[i] = 1;  
@@ -192,7 +241,25 @@ void loop() {
           replay[i] = 0; 
           playSdWavArray[i]->stop();
     }
-  }  */ 
-    
+  }  
+   */ 
 }
 
+
+
+
+/*
+  
+  mapping _ min_val
+ * 1: 11 ----- 502    65
+ * 2: 24 ----- 500    (Normal pin: 50)  50 
+ * 3: 10 ----- 530    64
+ * 4: 22 ----- 523   NO NORMAL PIN
+ * 5: 23 ----- 500 (Normal pin: 49) 49
+ * 6: 15 ----- 530  (Normal pin: 34)  34
+ * 7: 14   ----- 515 (Normal pin: 33) 33
+ * 8: 20 ----- 520  (NOrmal pin: 39) 39
+ * 9: 21 ----- 473   66
+ * 10: 12  ----- 520  31
+ * 11: 13  ----- 515   32
+ */
