@@ -8,21 +8,6 @@
 //audio control object
 AudioControlSGTL5000     sgtl5000_1;
 
-
-/*
-//Create an array of AudioPlaySdWav 
-AudioPlaySdWav playSdWav1;
-AudioPlaySdWav playSdWav2;
-
-AudioConnection          patchCord1(playSdWav1, 0, mixer1, 0);
-AudioConnection          patchCord2(playSdWav1, 1, mixer2, 0);
-AudioConnection          patchCord3(playSdWav2, 0, mixer1, 1);
-AudioConnection          patchCord4(playSdWav2, 1, mixer1, 1);
-AudioConnection          patchCord5(mixer1, 0, audioOutput, 0);
-AudioConnection          patchCord6(mixer1, 0, audioOutput, 1);
-*/
-
-
 /****AUDIO CONNECTIONS*****/
 AudioPlaySdWav           playSdWav4;     //xy=144.00571060180664,407.4602851867676
 AudioPlaySdWav           playSdWav1;     //xy=145.0057029724121,289.46025562286377
@@ -43,8 +28,7 @@ AudioPlaySdWav           playSdWav9;     //xy=161.00569915771484,619.55116033554
 //Arrray of 15 pointers to SD wav audio file structures
 AudioPlaySdWav* playSdWavArray[15]={&playSdWav1, &playSdWav2, &playSdWav3, &playSdWav4, &playSdWav5, &playSdWav6, &playSdWav7, &playSdWav8,
                                    &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15 
-                                  };
-                      
+                                  };                      
 
 AudioMixer4              mixer1;         //xy=329.00560760498047,283.460205078125
 AudioMixer4              mixer4;         //xy=328.0056838989258,688.4602403640747
@@ -100,13 +84,20 @@ AudioConnection          patchCord40(mixer10, 0, i2s1, 1);
 
 
 /**********ANALOG PINS**********/
+//perhps I should configure 11 structures representing my analog potentiometers and configure an array of pointers to those structures, so we can perform the proper mapping type.... (YES)
+//Potentiometers are labelled left to right starting with the array on the left....
+struct pot{
+   int pin_num; 
+   int min_val; 
+};
 
-void read_pin(int pin_num, int* num){ 
-      *num=map(analogRead(pin_num), 530, 1023, 0, 1023);
+//struct pot Pot1 = {
+
+
+void read_pin(char* pin_num, int* num){ 
+      *num = analogRead(*pin_num);
+      //*num=map(analogRead(pin_num), 530, 1023, 0, 1023);
 }
-
-
-
 /**********SETUP CONFIG**********/
 
 #define SDCARD_CS_PIN    10
@@ -124,11 +115,22 @@ const char* code_mapStr[] =
 char mystr[2]; //Initialized variable to store recieved data
 
 //INITIALIZE ANALOG PINS
-//Break it into states I think. So 
-
-int pot_pins_mode[11] = {10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24};
-int pot_pins_uni[11] = {10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24};
-
+int pot_pins[11] = {11, 33, 12, 13, 10, 34, 39, 21, 22, 23, 24};
+//analkog pins 10, 11, 22, 21, can only be accessed by explicitly calling the string "A.."
+/* mapping _ min_val
+ * 1: 11 ----- 502 
+ * 2: 24 ----- 500
+ * 3: 10 ----- 530
+ * 4: 22 ----- 523
+ * 5: 23 ----- 500
+ * 6: 15 ----- 530  (Normal pin: 34)
+ * 7: 14   ----- 515 (Normal pin: 33)
+ * 8: 20 ----- 520  (NOrmal pin: 39)
+ * 9: 21 ----- 473 NO NORMAL PIN
+ * 10: 12  ----- 520
+ * 11: 13  ----- 515
+ */
+ char* analog_pins[3] ={"A10", "A12", "A13"};
 
 int led_pins[6] ={16 ,17, 18, 19, 29, 30};
   
@@ -164,8 +166,9 @@ void loop() {
 
   
   int num;
-  read_pin(pot_pins_mode[1], &num);
+  read_pin(analog_pins[0], &num);
   Serial.println(num);
+  delay(100);
 
 
   /*
