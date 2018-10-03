@@ -14,10 +14,7 @@
 #define SDCARD_MOSI_PIN  7
 #define SDCARD_SCK_PIN   14
 
-AudioControlSGTL5000     sgtl5000_1;     //audio control object
-
-AudioOutputI2S           i2s1;           //xy=690.0056686401367,592.460223197937
-
+// GUItool: begin automatically generated code
 AudioPlaySdWav           playSdWav4;     //xy=144.00571060180664,407.4602851867676
 AudioPlaySdWav           playSdWav1;     //xy=145.0057029724121,289.46025562286377
 AudioPlaySdWav           playSdWav8;     //xy=144.0056915283203,565.4601669311523
@@ -26,6 +23,7 @@ AudioPlaySdWav           playSdWav3;     //xy=146.00568771362305,365.46026992797
 AudioPlaySdWav           playSdWav5;     //xy=146.00568771362305,446.4602336883545
 AudioPlaySdWav           playSdWav6;     //xy=146.0056872367859,481.46027755737305
 AudioPlaySdWav           playSdWav12;    //xy=151.0057144165039,723.5511236190796
+AudioPlaySdWav           playSdWav16;    //xy=150.55113983154297,884.3693437576294
 AudioPlaySdWav           playSdWav2;     //xy=153.0057144165039,327.4602222442627
 AudioPlaySdWav           playSdWav10;    //xy=153.0056915283203,653.5511260032654
 AudioPlaySdWav           playSdWav11;    //xy=154.00569915771484,687.5511469841003
@@ -33,6 +31,7 @@ AudioPlaySdWav           playSdWav15;    //xy=157.0056915283203,849.551157951355
 AudioPlaySdWav           playSdWav14;    //xy=158.0056915283203,815.5511817932129
 AudioPlaySdWav           playSdWav13;    //xy=160.0056915283203,780.5511379241943
 AudioPlaySdWav           playSdWav9;     //xy=161.00569915771484,619.5511603355408
+
 
 AudioMixer4              mixer1;         //xy=329.00560760498047,283.460205078125
 AudioMixer4              mixer4;         //xy=328.0056838989258,688.4602403640747
@@ -44,7 +43,8 @@ AudioMixer4              mixer8;         //xy=349.0056915283203,835.914804458618
 AudioMixer4              mixer7;         //xy=353.00572967529297,760.6419811248779
 AudioMixer4              mixer9;         //xy=532.0056686401367,549.6420440673828
 AudioMixer4              mixer10;        //xy=536.0056686401367,648.732988357544
-
+AudioEffectDelay         delay1;         //xy=624.5511589050293,803.7330093383789
+AudioOutputI2S           i2s1;           //xy=690.0056686401367,592.460223197937
 AudioConnection          patchCord1(playSdWav4, 0, mixer1, 3);
 AudioConnection          patchCord2(playSdWav4, 1, mixer2, 3);
 AudioConnection          patchCord3(playSdWav1, 0, mixer1, 0);
@@ -61,30 +61,35 @@ AudioConnection          patchCord13(playSdWav6, 0, mixer5, 1);
 AudioConnection          patchCord14(playSdWav6, 1, mixer6, 1);
 AudioConnection          patchCord15(playSdWav12, 0, mixer3, 3);
 AudioConnection          patchCord16(playSdWav12, 1, mixer4, 3);
-AudioConnection          patchCord17(playSdWav2, 0, mixer1, 1);
-AudioConnection          patchCord18(playSdWav2, 1, mixer2, 1);
-AudioConnection          patchCord19(playSdWav10, 0, mixer3, 1);
-AudioConnection          patchCord20(playSdWav10, 1, mixer4, 1);
-AudioConnection          patchCord21(playSdWav11, 0, mixer3, 2);
-AudioConnection          patchCord22(playSdWav11, 1, mixer4, 2);
-AudioConnection          patchCord23(playSdWav15, 0, mixer7, 2);
-AudioConnection          patchCord24(playSdWav15, 1, mixer8, 2);
-AudioConnection          patchCord25(playSdWav14, 0, mixer7, 1);
-AudioConnection          patchCord26(playSdWav14, 1, mixer8, 1);
-AudioConnection          patchCord27(playSdWav13, 0, mixer7, 0);
-AudioConnection          patchCord28(playSdWav13, 1, mixer8, 0);
-AudioConnection          patchCord29(playSdWav9, 0, mixer3, 0);
-AudioConnection          patchCord30(playSdWav9, 1, mixer4, 0);
-AudioConnection          patchCord31(mixer1, 0, mixer9, 0);
-AudioConnection          patchCord32(mixer4, 0, mixer10, 2);
-AudioConnection          patchCord33(mixer3, 0, mixer9, 2);
-AudioConnection          patchCord34(mixer2, 0, mixer10, 0);
-AudioConnection          patchCord35(mixer6, 0, mixer10, 1);
-AudioConnection          patchCord36(mixer5, 0, mixer9, 1);
-AudioConnection          patchCord37(mixer8, 0, mixer10, 3);
-AudioConnection          patchCord38(mixer7, 0, mixer9, 3);
-AudioConnection          patchCord39(mixer9, 0, i2s1, 0);
-AudioConnection          patchCord40(mixer10, 0, i2s1, 1);
+AudioConnection          patchCord17(playSdWav16, 0, mixer7, 3);
+AudioConnection          patchCord18(playSdWav16, 1, mixer8, 3);
+AudioConnection          patchCord19(playSdWav2, 0, mixer1, 1);
+AudioConnection          patchCord20(playSdWav2, 1, mixer2, 1);
+AudioConnection          patchCord21(playSdWav10, 0, mixer3, 1);
+AudioConnection          patchCord22(playSdWav10, 1, mixer4, 1);
+AudioConnection          patchCord23(playSdWav11, 0, mixer3, 2);
+AudioConnection          patchCord24(playSdWav11, 1, mixer4, 2);
+AudioConnection          patchCord25(playSdWav15, 0, mixer7, 2);
+AudioConnection          patchCord26(playSdWav15, 1, mixer8, 2);
+AudioConnection          patchCord27(playSdWav14, 0, mixer7, 1);
+AudioConnection          patchCord28(playSdWav14, 1, mixer8, 1);
+AudioConnection          patchCord29(playSdWav13, 0, mixer7, 0);
+AudioConnection          patchCord30(playSdWav13, 1, mixer8, 0);
+AudioConnection          patchCord31(playSdWav9, 0, mixer3, 0);
+AudioConnection          patchCord32(playSdWav9, 1, mixer4, 0);
+AudioConnection          patchCord33(mixer1, 0, mixer9, 0);
+AudioConnection          patchCord34(mixer4, 0, mixer10, 2);
+AudioConnection          patchCord35(mixer3, 0, mixer9, 2);
+AudioConnection          patchCord36(mixer2, 0, mixer10, 0);
+AudioConnection          patchCord37(mixer6, 0, mixer10, 1);
+AudioConnection          patchCord38(mixer5, 0, mixer9, 1);
+AudioConnection          patchCord39(mixer8, 0, mixer10, 3);
+AudioConnection          patchCord40(mixer7, 0, mixer9, 3);
+AudioConnection          patchCord41(mixer9, 0, i2s1, 0);
+AudioConnection          patchCord42(mixer10, 0, i2s1, 1);
+// GUItool: end automatically generated code
+
+
 
 /**********ANALOG POTENTIOMETER INPUTS**********/
 //Macros
@@ -158,17 +163,18 @@ struct Note_set{
   int len;
   int lowest_note;          //integer from 0 to 11 where 0 represents the note "A" and 11 represents the note "G#"
 };
+//Standardize the types of sound file names you will recieve
 
 struct Note_set violin_sounds = {.data = violin, .len = 42, .lowest_note = 10};
 struct Note_set bass_sounds = {.data = bass, .len = 42, .lowest_note = 10};
 struct Note_set flute_sounds = {.data = flute, .len = 42, .lowest_note = 10};
 struct Note_set kick_sounds = {.data = kick, .len = 25, .lowest_note = 3};
 struct Note_set snare_sounds = {.data = snare, .len = 18, .lowest_note = 10};
-struct Note_set hihat_sounds = {.data = hihat, .len = 13, .lowest_note = 3};
+struct Note_set hihat_sounds = {.data = hihat, .len = 13, .lowest_note = 3};      //ERRORS INITIALIZINGS THE KEYS OF THESE FILES
 
 //******** KEY STRUCT ************
 struct  Key{
-   char** notes;     //pointer to an array of string pointers which point to string literals hardcoded in the data section, llocate all of the memory to avoid dynamic variable creation
+   char** notes;     //pointer to an array of string pointers which point to string literals hardcoded in the data section, allocate all of the memory to avoid dynamic variable creation
    int  key;            //key of a-> g starts
    int   len;
 };
@@ -192,30 +198,24 @@ void key_constructor(struct Key* key, struct Note_set* sound_file_names, int set
 
   key->notes = (char**) malloc(key_length * sizeof(char*));
 
-
  Serial.println("PRINTING");
   for(int j = 0; j < ((sound_file_names->len - starting_index)/7); j++){
     for(int i = 0; i < 7; i++){
       key->notes[i*j] = sound_file_names->data[starting_index+intervals[i]];
-      //Serial.println(sound_file_names->data[starting_index+intervals[i]]);
+      Serial.println(sound_file_names->data[starting_index+intervals[i]]);
       key_length = (i+1)*(j+1);
-      //delay(300);
+      delay(50);
     }
     starting_index = starting_index + 12;
   }
-
- // Serial.print("This is the length = " );
-  //Serial.println(key_length);
   key->len = key_length;
 }
 
 
 void key_destructor(struct Key* key){
-
   for(int i = 0; i < key->len; i++){
       free(key->notes[i]);
       Serial.println("KEY DESTRUCTOR FREEING MEMORY");
-
   }
   free(key->notes);
 }
@@ -291,6 +291,7 @@ struct Session {
   struct Pot* session_pots[6];       //An array of six potentiometers
   int    octave_location;           //integer representing the index of the lowest note loaded to the button pad (notes array of a Key object)
   int    location;                  //represents the lowest note loaded out onto the session
+  struct Pad* button_pad;                       //Button pad
   //struct Arpeggiator* arpeggiator;
   //struct Chord* chord;
   int    current_effect;                     //int representing the mode for the session (arp, chord, off)
@@ -306,29 +307,35 @@ struct Recording_space{
   bool uninitialized;
 };
 
-/*NOTE
+/*
  * The potentiometers must be configured to get the note length data, pitch, and octave information then find the exact corresponding note string to point to
  */
 
 struct Arrangement {
-  struct Pot* config_pots[6];                 //An array of six potentiometers
-  struct Recorded_space* sequence[64];       //An Array of note files played in sequence Differentiate between a sound or just along note playing the entire duration....
+  struct Pot** config_pots;                 //An array of six potentiometers 6 potentiometers
+  struct Track** tracks;       //64 An Array of note files played in sequence Differentiate between a sound or just along note playing the entire duration....
   bool add_mode;
   bool is_playing_locally;
   int grid_location;                       //An integer representing the first location displayed on the button pad, for referencing and scrolling through sounds...
 };
 
+
+
 /*********** CONFIGURATION OBJECTS ***********************/
+struct Track{
+  struct Recorded_space** sequence;       //64 An Array of note files played in sequence Differentiate between a sound or just along note playing the entire duration....
+  struct Pad* button_pad;                       //Button pad
+};
 
 struct Config {
-  struct Pots* potentiometer[6];
+  struct Pots** potentiometer;          //6 potentiometers
   struct Sound_files* sound_options;
   struct Sound*   current_sound;
+  struct Pad* button_pad;                       //Button pad
   float  instrument_volume;
   bool is_on;
   int current_key;                  //This integer will contain the index of the current key within the Sound object
-  int delay_milli;                  //the number of milliseconds to delay the sound
-
+  int delay_milli;
   //For channel panning
   float right_gain;
   float left_gain;
@@ -336,30 +343,52 @@ struct Config {
 
 /*********** UNIVERSAL CONFIGURATION *******************/
 
-struct Universal_config{
-  struct Pot* universal_pots[5];    //Array of potentiometers which have universal priority
-  struct Instruments* rack[6];      //Array of four instruments
+struct Instrument_interface{
+  struct Pot** universal_pots;    //Array of potentiometers which have universal priority
+  struct Instruments** rack;      //Array of four instruments
   int current_instrument;           //An integer storing the index within the "rack" member of the currently loaded instrument
-  float master_volume;
+  float master_volume;          //COULD REMOVE  --> REPLACE WITH A TRACK STRUCT
   bool playing_all_recordings;
   int master_tempo;
 };
 
+/*
+void Instrument_interface_constructor(){
+  //Create new Pot pointer objects
+  //create Instrument pointer objects configured within the instruments
+
+
+}
+
 /*********** INTERFACE OBJECTS *******************/
 
+//THINK ABOUT HOW WE WANT THE BUTTON PAD TO BEHAVE UNDER CONFIGURATION MODE, MAYBE THE BUTTON PAD SHOULD BE NESTED UNDER THE CONFIGURATION MODES??? <--- THIS SEEMS LIKE THE PREPER DESIGN
+//Configure communication between mega and teensy for stateful button displays in the arrangement mode
 struct Button{
   AudioPlaySdWav* push_button;          //The sound playing object
   int current_color[3];                 //The current color of the given button pad at this state
+  bool is_down;
+  char* button_down;
+  char* button_up;
 };
 
-
-//NEW
-void button_constructor(struct Button* button, int num){
+void button_constructor(struct Button* button, AudioPlaySdWav* player, char* set_up, char* set_down ){
   int i;
+
+  //Set all of the buttons to red
   for(i = 0; i < 3; i++){
     button->current_color[i] = 255;
   }
-  button->push_button = playSdWavArray[num];
+
+  button->button_down = set_down;
+  button->button_up = set_up;
+  button->push_button = player;
+  button->is_down = false;
+  delay(50);
+  Serial.println("Button initalized");
+  Serial.print(button->button_up);
+  Serial.print(" ");
+  Serial.println(button->button_down);
 }
 
 struct Pad{
@@ -373,23 +402,45 @@ void pad_constructor(struct Pad* pad){
   pad->rows = 4;
   pad->button_array = (struct Button**) malloc(16 * sizeof(Button*));
   struct Button* temp_array_structs = (struct Button*) malloc(16 * sizeof(Button));
+  char* temp_button_state_up;
+  char* temp_button_state_down;
 
   AudioPlaySdWav* playSdWavArray[16]={&playSdWav1, &playSdWav2, &playSdWav3, &playSdWav4, &playSdWav5, &playSdWav6, &playSdWav7, &playSdWav8,
-                                   &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15,  };
+                                      &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15, &playSdWav16};
 
+  char button_ids[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' , 'k', 'k', 'm', 'n', 'o', 'p'};
+
+  //Create a pointer to an array of 2 chas's, initialize the characters with the proper Id's
   for(int i = 0; i < 16; i++){
-    button_constructor(&temp_array_structs[i], )
+    temp_button_state_up = (char*) malloc(2* sizeof(char));
+    temp_button_state_down = (char*) malloc(2* sizeof(char));
+
+    temp_button_state_up[0] = button_ids[i];
+    temp_button_state_up[1] = 'U';
+
+    temp_button_state_down[0] = button_ids[i];
+    temp_button_state_down[1] = 'D';
+
+    button_constructor(&temp_array_structs[i], playSdWavArray[i], temp_button_state_up, temp_button_state_down);
   }
+  Serial.println("PAD CONSTRUCTED");
 }
 
-
-struct Interface{
-  struct Pad* button_pad;                       //Button pad
-  struct Universal_config* universal_config;    //config potentiometers
+struct Pad button_pad;
+/*
+struct Physical_interface{
+  struct Instrument_interface* instrument_interface;    //config potentiometers
 };
 
-/************ INSTRUMENTS ************************************/
+//COMPLETE THIS
+void Physical_interface_constructor(struct Physical_interface* physical_interface){
 
+
+}
+*/
+
+/*********** INSTRUMENTS ************************************/
+/*
 struct Instrument {
   int    current_mode;                //An integer representing the current mode of the Instrument (Session/Arrangement/Config)
   struct Session* session;            //pointer to a session object associated with the instrument
@@ -397,10 +448,14 @@ struct Instrument {
   struct Config* configuration;       //pointer t oa configuration object for the given instrument  --> volume/Current_sound
 };
 
+void instrument_constructor(){
+
+
+}*/
 /**********COMMUNICATION BETWEEN TEENSY AND MEGA2560**********/
 
-const char code_map_D[16][2] ={{'a','D'},{'b','D'},{'c','D'},{'d','D'},{'e','D'},{'f','D'},{'g','D'},{'h','D'},{'i','D'},{'j','D'},{'k','D'},{'l','D'},{'m','D'},{'n','D'},{'o','D'},{'p','D'}};
-const char code_map_U[16][2] ={{'a','U'},{'b','U'},{'c','U'},{'d','U'},{'e','U'},{'f','U'},{'g','U'},{'h','U'},{'i','U'},{'j','U'},{'k','U'},{'l','U'},{'m','U'},{'n','U'},{'o','U'},{'p','U'}};
+//const char code_map_D[16][2] ={{'a','D'},{'b','D'},{'c','D'},{'d','D'},{'e','D'},{'f','D'},{'g','D'},{'h','D'},{'i','D'},{'j','D'},{'k','D'},{'l','D'},{'m','D'},{'n','D'},{'o','D'},{'p','D'}};
+//const char code_map_U[16][2] ={{'a','U'},{'b','U'},{'c','U'},{'d','U'},{'e','U'},{'f','U'},{'g','U'},{'h','U'},{'i','U'},{'j','U'},{'k','U'},{'l','U'},{'m','U'},{'n','U'},{'o','U'},{'p','U'}};
 
 char mystr[2]; //recieve buffer from mega 2560
 int replay[15];
@@ -412,9 +467,10 @@ int replay[15];
 void setup() {
 
   Serial.begin(1200);
-
   sound_files_constructor(&file_structure);
-
+  pad_constructor(&button_pad);
+  //Serial.println("This is an attempt at accessing some shit:");
+  //Serial.println(file_structure.sounds[2]->keys[0]->notes[0]);
 
   /*
   //ENABLE SERIAL COMMUNICATION
@@ -476,7 +532,19 @@ void loop() {
   }
   */
 }
-
+/*Configure communication with Arduino and Teensy. So we have a button pad object for each configuration: Session, Arrangement->Tracks, Config
+*Arrangement:
+* In arrangement mode entire board will be presented blank. Then we will click a note, the note will light up to a color corresponding with its pitch in the key.
+*   The pitch is determine by polling the pitch potentiometer
+* 1: blue, ---> rainbow to 7: ( dont know how to tell the user the octave)
+*
+*Session:
+*
+*
+*Config
+*
+*
+*/
 
 
 
