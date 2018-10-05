@@ -1,18 +1,31 @@
-//QUESTION: DIFFFERENTIATE BETWEEN THE VALUE AND THE POTENTIOMETER
-
-#define NUM_SOUNDS   6
-
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
 
+#include "Sound_lib.h"
+
 /****AUDIO CONNECTIONS*****/
 
 #define SDCARD_CS_PIN    10
 #define SDCARD_MOSI_PIN  7
 #define SDCARD_SCK_PIN   14
+
+#define NUM_SOUNDS   6
+
+#define A_KEY 0
+#define Bb_KEY 1
+#define B_KEY 2
+#define C_KEY 3
+#define Db_KEY 4
+#define D_KEY 5
+#define Eb_KEY 6
+#define E_KEY 7
+#define F_KEY 8
+#define Gb_KEY 9
+#define G_KEY 10
+#define Ab_KEY 11
 
 // GUItool: begin automatically generated code
 AudioPlaySdWav           playSdWav4;     //xy=144.00571060180664,407.4602851867676
@@ -87,12 +100,42 @@ AudioConnection          patchCord39(mixer8, 0, mixer10, 3);
 AudioConnection          patchCord40(mixer7, 0, mixer9, 3);
 AudioConnection          patchCord41(mixer9, 0, i2s1, 0);
 AudioConnection          patchCord42(mixer10, 0, i2s1, 1);
-// GUItool: end automatically generated code
+
+char* violin[] = {"violin_a1.wav", "violin_a#1.wav", "violin_b1.wav", "violin_c1.wav", "violin_c#1.wav", "violin_d1.wav", "violin_d#1.wav", "violin_e1.wav", "violin_f1.wav", "violin_f#1.wav", "violin_g1.wav", "violin_g#1.wav",
+                              "violin_a2.wav", "violin_a#2.wav", "violin_b2.wav", "violin_c2.wav", "violin_c#2.wav", "violin_d2.wav", "violin_d#2.wav", "violin_e2.wav", "violin_f2.wav", "violin_f#2.wav", "violin_g2.wav", "violin_g#2.wav",
+                              "violin_a3.wav", "violin_a#3.wav", "violin_b3.wav", "violin_c3.wav", "violin_c#3.wav", "violin_d3.wav", "violin_d#3.wav", "violin_e3.wav", "violin_f3.wav", "violin_f#3.wav", "violin_g3.wav", "violin_g#3.wav",
+                              "violin_a4.wav", "violin_a#4.wav", "violin_b4.wav", "violin_c4.wav", "violin_c#4.wav"};
+                              //NOTE: the last file in this array "violin_c#4.wav" does not actually exist on the SD card
+
+char* bass[] ={ "808_a1.wav", "808_a#1.wav", "808_b1.wav", "808_c1.wav", "808_c#1.wav", "808_d1.wav", "808_d#1.wav", "808_e1.wav", "808_f1.wav", "808_f#1.wav", "808_g1.wav", "808_g#1.wav",
+                            "808_a2.wav", "808_a#2.wav", "808_b2.wav","808_c2.wav", "808_c#2.wav", "808_d2.wav", "808_d#2.wav", "808_e2.wav", "808_f2.wav", "808_f#2.wav", "808_g2.wav", "808_g#2.wav",
+                            "808_a3.wav", "808_a#3.wav", "808_b3.wav", "808_c3.wav", "808_c#3.wav", "808_d3.wav", "808_d#3.wav", "808_e3.wav", "808_f3.wav", "808_f#3.wav", "808_g3.wav", "808_g#3.wav",
+                            "808_a4.wav", "808_a#4.wav", "808_b4.wav","808_c4.wav", "808_c#4.wav", "808_d4.wav", "808_d#4.wav", "808_e4.wav", "808_f4.wav", "808_f#4.wav", "808_g4.wav", "808_g#4.wav",
+                            "808_a5.wav", "808_a#5.wav", "808_b5.wav", "808_c5.wav", "808_c#5.wav", "808_d5.wav", "808_d#5.wav", "808_e5.wav", "808_f5.wav", "808_f#5.wav", "808_g5.wav", "808_g#5.wav",
+                            "808_a6.wav", "808_a#6.wav", "808_b6.wav", "808_c6.wav", "808_c#6.wav"};
+
+char* piano[] =   {"piano_a1.wav", "piano_a#1.wav", "piano_b1.wav", "piano_c1.wav", "piano_c#1.wav", "piano_d1.wav", "piano_d#1.wav", "piano_e1.wav", "piano_f1.wav", "piano_f#1.wav", "piano_g1.wav", "piano_g#1.wav",
+                               "piano_a2.wav", "piano_a#2.wav", "piano_b2.wav", "piano_c2.wav", "piano_c#2.wav", "piano_d2.wav", "piano_d#2.wav", "piano_e2.wav", "piano_f2.wav", "piano_f#2.wav", "piano_g2.wav", "piano_g#2.wav",
+                               "piano_a3.wav", "piano_a#3.wav", "piano_b3.wav", "piano_c3.wav", "piano_c#3.wav", "piano_d3.wav", "piano_d#3.wav", "piano_e3.wav", "piano_f3.wav", "piano_f#3.wav", "piano_g3.wav", "piano_g#3.wav",
+                               "piano_a4.wav", "piano_a#4.wav", "piano_b4.wav", "piano_c4.wav", "piano_c#4.wav", "piano_d4.wav", "piano_d#4.wav", "piano_e4.wav", "piano_f4.wav", "piano_f#4.wav", "piano_g4.wav", "piano_g#4.wav",
+                               "piano_a5.wav", "piano_a#5.wav", "piano_b5.wav", "piano_c5.wav", "piano_c#5.wav", "piano_d5.wav", "piano_d#5.wav", "piano_e5.wav", "piano_f5.wav", "piano_f#5.wav", "piano_g5.wav", "piano_g#5.wav",
+                               "piano_a6.wav", "piano_a#6.wav", "piano_b6.wav", "piano_c6.wav", "piano_c#6.wav"};
+
+char* kick[] ={ "kick_a1.wav", "kick_a#1.wav", "kick_b1.wav", "kick_c1.wav", "kick_c#1.wav", "kick_d1.wav", "kick_d#1.wav", "kick_e1.wav", "kick_f1.wav", "kick_f#1.wav", "kick_g1.wav", "kick_g#1.wav",
+                            "kick_a2.wav", "kick_a#2.wav", "kick_b2.wav", "kick_c2.wav", "kick_c#2.wav", "kick_d2.wav", "kick_d#2.wav", "kick_e2.wav", "kick_f2.wav", "kick_f#2.wav", "kick_g2.wav", "kick_g#2.wav",
+                            "kick_a3.wav", "kick_a#3.wav", "kick_b3.wav", "kick_c3.wav", "kick_c#3.wav", "kick_d3.wav", "kick_d#3.wav", "kick_e3.wav", "kick_f3.wav", "kick_f#3.wav", "kick_g3.wav", "kick_g#3.wav"};
+
+char* snare[] ={"snare_a1.wav", "snare_a#1.wav", "snare_b1.wav", "snare_c1.wav", "snare_c#1.wav", "snare_d1.wav", "snare_d#1.wav", "snare_e1.wav", "snare_f1.wav", "snare_f#1.wav", "snare_g1.wav", "snare_g#1.wav",
+                            "snare_a2.wav", "snare_a#2.wav", "snare_b2.wav", "snare_c2.wav", "snare_c#2.wav", "snare_d2.wav", "snare_d#2.wav", "snare_e2.wav", "snare_f2.wav", "snare_f#2.wav", "snare_g2.wav", "snare_g#2.wav",
+                            "snare_a3.wav", "snare_a#3.wav", "snare_b3.wav", "snare_c3.wav", "snare_c#3.wav", "snare_d3.wav", "snare_d#3.wav", "snare_e3.wav", "snare_f3.wav", "snare_f#3.wav", "snare_g3.wav", "snare_g#3.wav"};
+
+char* hihat[] ={"hat_a1.wav", "hat_a#1.wav", "hat_b1.wav", "hat_c1.wav", "hat_c#1.wav", "hat_d1.wav", "hat_d#1.wav", "hat_e1.wav", "hat_f1.wav", "hat_f#1.wav", "hat_g1.wav", "hat_g#1.wav"
+                            "hat_a2.wav", "hat_a#2.wav", "hat_b2.wav", "hat_c2.wav", "hat_c#2.wav", "hat_d2.wav", "hat_d#2.wav", "hat_e2.wav", "hat_f2.wav", "hat_f#2.wav", "hat_g2.wav", "hat_g#2.wav"
+                            "hat_a3.wav", "hat_a#3.wav", "hat_b3.wav", "hat_c3.wav", "hat_c#3.wav", "hat_d3.wav", "hat_d#3.wav", "hat_e3.wav", "hat_f3.wav", "hat_f#3.wav", "hat_g3.wav", "hat_g#3.wav"};
 
 
 
 /**********ANALOG POTENTIOMETER INPUTS**********/
-//Macros
 #define NUM_UNIVERSAL_POTENTIOMETERS 5
 #define NUM_CONFIG_POTENTIOMETERS 6
 
@@ -124,334 +167,7 @@ void pot_read_pin(struct Pot* pot, int* num){
       *num=map(analogRead(pot->pin_num), pot->min_val, 1023, 0, pot->range);
 }
 
-/********** FILE STRUCTURE HANDLING **************************/
 
-char* violin[] = {"violin_g2.wav", "violin_g#2.wav", "violin_a2.wav", "violin_a#2.wav", "violin_b2.wav",
-                        "violin_c3.wav", "violin_c#3.wav", "violin_d3.wav", "violin_d#3.wav", "violin_e3.wav", "violin_f3.wav", "violin_f#3.wav", "violin_g3.wav", "violin_g#3.wav", "violin_a3.wav", "violin_a#3.wav", "violin_b3.wav",
-                        "violin_c4.wav", "violin_c#4.wav", "violin_d4.wav", "violin_d#4.wav", "violin_e4.wav", "violin_f4.wav", "violin_f#4.wav", "violin_g4.wav", "violin_g#4.wav", "violin_a4.wav", "violin_a#4.wav", "violin_b4.wav",
-                        "violin_c5.wav", "violin_c#5.wav", "violin_d5.wav", "violin_d#5.wav", "violin_e5.wav", "violin_f5.wav", "violin_f#5.wav", "violin_g5.wav", "violin_g#5.wav", "violin_a5.wav", "violin_a#5.wav", "violin_b5.wav",
-                        "violin_c6.wav"};
-
-char* bass[] ={"808_g2.wav", "808_g#2.wav", "808_a2.wav", "808_a#2.wav", "808_b2.wav",
-                     "808_c3.wav", "808_c#3.wav", "808_d3.wav", "808_d#3.wav", "808_e3.wav", "808_f3.wav", "808_f#3.wav", "808_g3.wav", "808_g#3.wav", "808_a3.wav", "808_a#3.wav", "808_b3.wav",
-                     "808_c4.wav", "808_c#4.wav", "808_d4.wav", "808_d#4.wav", "808_e4.wav", "808_f4.wav", "808_f#4.wav", "808_g4.wav", "808_g#4.wav", "808_a4.wav", "808_a#4.wav", "808_b4.wav",
-                     "808_c5.wav", "808_c#5.wav", "808_d5.wav", "808_d#5.wav", "808_e5.wav", "808_f5.wav", "808_f#5.wav", "808_g5.wav", "808_g#5.wav", "808_a5.wav", "808_a#5.wav", "808_b5.wav",
-                     "808_c6.wav"};
-
-char* flute[] ={"flute_g2.wav", "flute_g#2.wav", "flute_a2.wav", "flute_a#2.wav", "flute_b2.wav",
-                      "flute_c3.wav", "flute_c#3.wav", "flute_d3.wav", "flute_d#3.wav", "flute_e3.wav", "flute_f3.wav", "flute_f#3.wav", "flute_g3.wav", "flute_g#3.wav", "flute_a3.wav", "flute_a#3.wav", "flute_b3.wav",
-                      "flute_c4.wav", "flute_c#4.wav", "flute_d4.wav", "flute_d#4.wav", "flute_e4.wav", "flute_f4.wav", "flute_f#4.wav", "flute_g4.wav", "flute_g#4.wav", "flute_a4.wav", "flute_a#4.wav", "flute_b4.wav",
-                      "flute_c5.wav", "flute_c#5.wav", "flute_d5.wav", "flute_d#5.wav", "flute_e5.wav", "flute_f5.wav", "flute_f#5.wav", "flute_g5.wav", "flute_g#5.wav", "flute_a5.wav", "flute_a#5.wav", "flute_b5.wav",
-                      "flute_c6.wav"};
-
-char* kick[] ={"kick_c2.wav", "kick_c#2.wav", "kick_d2.wav", "kick_d#2.wav", "kick_e2.wav", "kick_f2.wav", "kick_f#2.wav", "kick_g2.wav", "kick_g#2.wav", "kick_a2.wav", "kick_a#2.wav", "kick_b2.wav",
-                     "kick_c3.wav", "kick_c#3.wav", "kick_d3.wav", "kick_d#3.wav", "kick_e3.wav", "kick_f3.wav", "kick_f#3.wav", "kick_g3.wav", "kick_g#3.wav", "kick_a3.wav", "kick_a#3.wav", "kick_b3.wav",
-                     "kick_c4.wav"};
-
-char* snare[] ={"snare_g2.wav", "snare_g#2.wav", "snare_a2.wav", "snare_a#2.wav", "snare_b2.wav",
-                      "snare_c3.wav", "snare_c#3.wav", "snare_d3.wav", "snare_d#3.wav", "snare_e3.wav", "snare_f3.wav", "snare_f#3.wav", "snare_g3.wav", "snare_g#3.wav", "snare_a3.wav", "snare_a#3.wav", "snare_b3.wav",
-                      "snare_c4.wav"};
-
-char* hihat[] ={"hat_c2.wav", "hat_c#2.wav", "hat_d2.wav", "hat_d#2.wav", "hat_e2.wav", "hat_f2.wav", "hat_f#2.wav", "hat_g2.wav", "hat_g#2.wav", "hat_a2.wav", "hat_a#2.wav", "hat_b2.wav",
-                      "hat_c3.wav"};
-
-
-//******** ARRAY STRUCT ***********
-//An array of strings of file names, we need an associated length
-struct Note_set{
-  char** data;
-  int len;
-  int lowest_note;          //integer from 0 to 11 where 0 represents the note "A" and 11 represents the note "G#"
-};
-//Standardize the types of sound file names you will recieve
-
-struct Note_set violin_sounds = {.data = violin, .len = 42, .lowest_note = 10};
-struct Note_set bass_sounds = {.data = bass, .len = 42, .lowest_note = 10};
-struct Note_set flute_sounds = {.data = flute, .len = 42, .lowest_note = 10};
-struct Note_set kick_sounds = {.data = kick, .len = 25, .lowest_note = 3};
-struct Note_set snare_sounds = {.data = snare, .len = 18, .lowest_note = 10};
-struct Note_set hihat_sounds = {.data = hihat, .len = 13, .lowest_note = 3};      //ERRORS INITIALIZINGS THE KEYS OF THESE FILES
-
-//******** KEY STRUCT ************
-struct  Key{
-   char** notes;     //pointer to an array of string pointers which point to string literals hardcoded in the data section, allocate all of the memory to avoid dynamic variable creation
-   int  key;            //key of a-> g starts
-   int   len;
-};
-
-void key_constructor(struct Key* key, struct Note_set* sound_file_names, int set_key){
-  int intervals[7] = {0, 2, 4, 5, 7, 9, 11};
-  key->key = set_key;
-  int starting_index = 0;
-
-  if(set_key < sound_file_names->lowest_note){    //find the note an octave up //should be at index 5
-    starting_index = (11 - sound_file_names->lowest_note) + set_key + 1;
-
-  }
-  else{
-    starting_index = set_key - sound_file_names->lowest_note;
-  }
-
-  int num_octaves = ((sound_file_names->len - starting_index)/7);
-  int key_length = num_octaves * 7;
-
-
-  key->notes = (char**) malloc(key_length * sizeof(char*));
-
- Serial.println("PRINTING");
-  for(int j = 0; j < ((sound_file_names->len - starting_index)/7); j++){
-    for(int i = 0; i < 7; i++){
-      key->notes[i*j] = sound_file_names->data[starting_index+intervals[i]];
-      Serial.println(sound_file_names->data[starting_index+intervals[i]]);
-      key_length = (i+1)*(j+1);
-      delay(50);
-    }
-    starting_index = starting_index + 12;
-  }
-  key->len = key_length;
-}
-
-
-void key_destructor(struct Key* key){
-  for(int i = 0; i < key->len; i++){
-      free(key->notes[i]);
-      Serial.println("KEY DESTRUCTOR FREEING MEMORY");
-  }
-  free(key->notes);
-}
-
-
-//******** SOUNDS STRUCT ********
-struct Sound{
-   struct Key** keys;          //12 member long array      a pointer to an array of pointers
-   int current_key;            //The current key we are playing in
-};
-
-//we want a pointer to an array of key pointers
-//initialize they Keys structs, then initialize an array of Key pointers which are dynamically set to point to the new key objects
-
-
-void sound_constructor(struct Sound* sound, struct Note_set* sound_file_names){
-  struct Key* array_new_structs = (struct Key*) malloc(12 * sizeof(struct Key));
-  sound->keys = (struct Key**) malloc(12 * sizeof(struct Key*));
-
-  for(int i = 0; i < 12; i++){
-    key_constructor(&array_new_structs[i], sound_file_names, i);
-    sound->keys[i] = &array_new_structs[i];
-    Serial.println("KEY CREATED");
-  }
-}
-
-void sound_destructor(struct Sound* sound){
-
-  for(int i = 0; i < 12; i++){
-      key_destructor(sound->keys[i]);
-      free(sound->keys[i]);
-      Serial.println("SOUND DESTRUCTOR FREEING MEMORY");
-  }
-  free(sound->keys);
-}
-
-struct Sound VIOLIN;
-
-
-//******** SOUND_FILES STRUCT *******
-struct Sound_files{
-   struct Sound** sounds;
-   int number_of_sounds;
-   int current_sound;
-};
-
-void sound_files_constructor(struct Sound_files* sound_files){
-
-  //initialize all of the pointers
-  //struct Note_set
-
-  struct Note_set* RAW_SOUNDS[6] = {&violin_sounds, &bass_sounds, &flute_sounds, &snare_sounds, &hihat_sounds, &kick_sounds};
-
-  struct Sound* array_of_structs = (struct Sound*) malloc(NUM_SOUNDS * sizeof(struct Sound));
-  sound_files->sounds = (struct Sound**) malloc(NUM_SOUNDS * sizeof(struct Sound*));
-
-  for(int i = 0; i < NUM_SOUNDS; i++){
-    sound_constructor(&array_of_structs[i], RAW_SOUNDS[i] );
-    sound_files->sounds[i] = &array_of_structs[i];
-    Serial.println("NEW SOUND CREATED**********");
-  }
-  sound_files->current_sound = 0;
-  sound_files->number_of_sounds = NUM_SOUNDS;
-}
-
-struct Sound_files file_structure;
-
-/*********** ADD DRUM INSTRUMENT SEPERATELY
-
-/*********** SESSION OBJECTS ***********************/
-
-struct Session {
-  struct Pot* session_pots[6];       //An array of six potentiometers
-  int    octave_location;           //integer representing the index of the lowest note loaded to the button pad (notes array of a Key object)
-  int    location;                  //represents the lowest note loaded out onto the session
-  struct Pad* button_pad;                       //Button pad
-  //struct Arpeggiator* arpeggiator;
-  //struct Chord* chord;
-  int    current_effect;                     //int representing the mode for the session (arp, chord, off)
-};
-
-/*********** ARRANGEMENT OBJECTS ***********************/
-
-
-//A single spot in the recorded grid 16th note resolution...
-struct Recording_space{
-  char* note;       //a pointer to a string of the file name which exists in the gien location
-  int note_length;              //an integer stating the total number of space the given rocording consumes from its start, faster indexing.
-  bool uninitialized;
-};
-
-/*
- * The potentiometers must be configured to get the note length data, pitch, and octave information then find the exact corresponding note string to point to
- */
-
-struct Arrangement {
-  struct Pot** config_pots;                 //An array of six potentiometers 6 potentiometers
-  struct Track** tracks;       //64 An Array of note files played in sequence Differentiate between a sound or just along note playing the entire duration....
-  bool add_mode;
-  bool is_playing_locally;
-  int grid_location;                       //An integer representing the first location displayed on the button pad, for referencing and scrolling through sounds...
-};
-
-
-
-/*********** CONFIGURATION OBJECTS ***********************/
-struct Track{
-  struct Recorded_space** sequence;       //64 An Array of note files played in sequence Differentiate between a sound or just along note playing the entire duration....
-  struct Pad* button_pad;                       //Button pad
-};
-
-struct Config {
-  struct Pots** potentiometer;          //6 potentiometers
-  struct Sound_files* sound_options;
-  struct Sound*   current_sound;
-  struct Pad* button_pad;                       //Button pad
-  float  instrument_volume;
-  bool is_on;
-  int current_key;                  //This integer will contain the index of the current key within the Sound object
-  int delay_milli;
-  //For channel panning
-  float right_gain;
-  float left_gain;
-};
-
-/*********** UNIVERSAL CONFIGURATION *******************/
-
-struct Instrument_interface{
-  struct Pot** universal_pots;    //Array of potentiometers which have universal priority
-  struct Instruments** rack;      //Array of four instruments
-  int current_instrument;           //An integer storing the index within the "rack" member of the currently loaded instrument
-  float master_volume;          //COULD REMOVE  --> REPLACE WITH A TRACK STRUCT
-  bool playing_all_recordings;
-  int master_tempo;
-};
-
-/*
-void Instrument_interface_constructor(){
-  //Create new Pot pointer objects
-  //create Instrument pointer objects configured within the instruments
-
-
-}
-
-/*********** INTERFACE OBJECTS *******************/
-
-//THINK ABOUT HOW WE WANT THE BUTTON PAD TO BEHAVE UNDER CONFIGURATION MODE, MAYBE THE BUTTON PAD SHOULD BE NESTED UNDER THE CONFIGURATION MODES??? <--- THIS SEEMS LIKE THE PREPER DESIGN
-//Configure communication between mega and teensy for stateful button displays in the arrangement mode
-struct Button{
-  AudioPlaySdWav* push_button;          //The sound playing object
-  int current_color[3];                 //The current color of the given button pad at this state
-  bool is_down;
-  char* button_down;
-  char* button_up;
-};
-
-void button_constructor(struct Button* button, AudioPlaySdWav* player, char* set_up, char* set_down ){
-  int i;
-
-  //Set all of the buttons to red
-  for(i = 0; i < 3; i++){
-    button->current_color[i] = 255;
-  }
-
-  button->button_down = set_down;
-  button->button_up = set_up;
-  button->push_button = player;
-  button->is_down = false;
-  delay(50);
-  Serial.println("Button initalized");
-  Serial.print(button->button_up);
-  Serial.print(" ");
-  Serial.println(button->button_down);
-}
-
-struct Pad{
-  struct Button** button_array;
-  int columns;
-  int rows;
-};
-
-void pad_constructor(struct Pad* pad){
-  pad->columns = 4;
-  pad->rows = 4;
-  pad->button_array = (struct Button**) malloc(16 * sizeof(Button*));
-  struct Button* temp_array_structs = (struct Button*) malloc(16 * sizeof(Button));
-  char* temp_button_state_up;
-  char* temp_button_state_down;
-
-  AudioPlaySdWav* playSdWavArray[16]={&playSdWav1, &playSdWav2, &playSdWav3, &playSdWav4, &playSdWav5, &playSdWav6, &playSdWav7, &playSdWav8,
-                                      &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15, &playSdWav16};
-
-  char button_ids[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' , 'k', 'k', 'm', 'n', 'o', 'p'};
-
-  //Create a pointer to an array of 2 chas's, initialize the characters with the proper Id's
-  for(int i = 0; i < 16; i++){
-    temp_button_state_up = (char*) malloc(2* sizeof(char));
-    temp_button_state_down = (char*) malloc(2* sizeof(char));
-
-    temp_button_state_up[0] = button_ids[i];
-    temp_button_state_up[1] = 'U';
-
-    temp_button_state_down[0] = button_ids[i];
-    temp_button_state_down[1] = 'D';
-
-    button_constructor(&temp_array_structs[i], playSdWavArray[i], temp_button_state_up, temp_button_state_down);
-  }
-  Serial.println("PAD CONSTRUCTED");
-}
-
-struct Pad button_pad;
-/*
-struct Physical_interface{
-  struct Instrument_interface* instrument_interface;    //config potentiometers
-};
-
-//COMPLETE THIS
-void Physical_interface_constructor(struct Physical_interface* physical_interface){
-
-
-}
-*/
-
-/*********** INSTRUMENTS ************************************/
-/*
-struct Instrument {
-  int    current_mode;                //An integer representing the current mode of the Instrument (Session/Arrangement/Config)
-  struct Session* session;            //pointer to a session object associated with the instrument
-  struct Arrangement* arrangement;    //pointer to an arrangement object associated with the instrument
-  struct Config* configuration;       //pointer t oa configuration object for the given instrument  --> volume/Current_sound
-};
-
-void instrument_constructor(){
-
-
-}*/
 /**********COMMUNICATION BETWEEN TEENSY AND MEGA2560**********/
 
 //const char code_map_D[16][2] ={{'a','D'},{'b','D'},{'c','D'},{'d','D'},{'e','D'},{'f','D'},{'g','D'},{'h','D'},{'i','D'},{'j','D'},{'k','D'},{'l','D'},{'m','D'},{'n','D'},{'o','D'},{'p','D'}};
@@ -465,10 +181,31 @@ int replay[15];
 /********** EXECUTABLE PROGRAM **************/
 
 void setup() {
+  Serial.begin(300);
+  delay(200);
+  while (!Serial) ;
+  Serial.println("Starting to construct note_sets");
+  Note_set* violin_sounds = new Note_set(violin, 40, 2, false);
+  Note_set* bass_sounds = new Note_set(bass, 65, 4, false);
+  Note_set* piano_sounds = new Note_set(piano, 65, 4, false);
+  Note_set* kick_sounds = new Note_set(kick, 36, 3, true);
+  Note_set* snare_sounds = new Note_set(snare, 36, 3, true);
+  Note_set* hihat_sounds = new Note_set(hihat, 36, 3, true);
 
-  Serial.begin(1200);
-  sound_files_constructor(&file_structure);
-  pad_constructor(&button_pad);
+
+  /*
+  Music_key* new_key1 = new Music_key(violin_sounds, A_KEY);
+  Music_key* new_key2 = new Music_key(piano_sounds, Eb_KEY);
+  Music_key* new_key3 = new Music_key(kick_sounds, F_KEY);
+  Music_key* new_key4 = new Music_key(bass_sounds, Ab_KEY);
+  */
+
+  Sound* new_sound = new Sound(bass_sounds);
+
+
+
+//  sound_files_constructor(&file_structure);
+ // pad_constructor(&button_pad);
   //Serial.println("This is an attempt at accessing some shit:");
   //Serial.println(file_structure.sounds[2]->keys[0]->notes[0]);
 
@@ -501,7 +238,8 @@ void setup() {
 
 
 void loop() {
-
+  Serial.println("moose2");
+  delay(5000);
 /*
   for(int i = 0; i < violin_keyC.len; i++){
     Serial.println(violin_keyC.notes[i]);
