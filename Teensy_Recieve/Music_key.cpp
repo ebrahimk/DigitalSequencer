@@ -14,14 +14,16 @@ Music_key::Music_key(Note_set* note_set, int key){
     if(note_set->is_percussion){
 
       Serial.println("PERCUSSIVE INSTRUMENT BEING INTIALIZED");
-      this->length = note_set->length;
+      this->length = (note_set->octaves+1)*8;
       this->key = -1;
       this->notes = new char*[this->length];
 
         for(i = 0; i < this->length; i++){
           this->notes[i] = note_set->data[i];
+          Serial.print(i);
+          Serial.print(": ");
           Serial.println(this->notes[i]);
-          delay(100);
+          delay(20);
         }
     }
 
@@ -52,7 +54,7 @@ Music_key::Music_key(Note_set* note_set, int key){
           index++;
           if(index == (this->octaves * 8))
             break;
-          delay(100);
+          delay(20);
         }
       }
     }

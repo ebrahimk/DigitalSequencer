@@ -129,9 +129,9 @@ char* snare[] ={"snare_a1.wav", "snare_a#1.wav", "snare_b1.wav", "snare_c1.wav",
                             "snare_a2.wav", "snare_a#2.wav", "snare_b2.wav", "snare_c2.wav", "snare_c#2.wav", "snare_d2.wav", "snare_d#2.wav", "snare_e2.wav", "snare_f2.wav", "snare_f#2.wav", "snare_g2.wav", "snare_g#2.wav",
                             "snare_a3.wav", "snare_a#3.wav", "snare_b3.wav", "snare_c3.wav", "snare_c#3.wav", "snare_d3.wav", "snare_d#3.wav", "snare_e3.wav", "snare_f3.wav", "snare_f#3.wav", "snare_g3.wav", "snare_g#3.wav"};
 
-char* hihat[] ={"hat_a1.wav", "hat_a#1.wav", "hat_b1.wav", "hat_c1.wav", "hat_c#1.wav", "hat_d1.wav", "hat_d#1.wav", "hat_e1.wav", "hat_f1.wav", "hat_f#1.wav", "hat_g1.wav", "hat_g#1.wav"
-                            "hat_a2.wav", "hat_a#2.wav", "hat_b2.wav", "hat_c2.wav", "hat_c#2.wav", "hat_d2.wav", "hat_d#2.wav", "hat_e2.wav", "hat_f2.wav", "hat_f#2.wav", "hat_g2.wav", "hat_g#2.wav"
-                            "hat_a3.wav", "hat_a#3.wav", "hat_b3.wav", "hat_c3.wav", "hat_c#3.wav", "hat_d3.wav", "hat_d#3.wav", "hat_e3.wav", "hat_f3.wav", "hat_f#3.wav", "hat_g3.wav", "hat_g#3.wav"};
+char* hihat[] ={"hat_a1.wav", "hat_a#1.wav", "hat_b1.wav", "hat_c1.wav", "hat_c#1.wav", "hat_d1.wav", "hat_d#1.wav", "hat_e1.wav", "hat_f1.wav", "hat_f#1.wav", "hat_g1.wav", "hat_g#1.wav",
+                "hat_a2.wav", "hat_a#2.wav", "hat_b2.wav", "hat_c2.wav", "hat_c#2.wav", "hat_d2.wav", "hat_d#2.wav", "hat_e2.wav", "hat_f2.wav", "hat_f#2.wav", "hat_g2.wav", "hat_g#2.wav",
+                "hat_a3.wav", "hat_a#3.wav", "hat_b3.wav", "hat_c3.wav", "hat_c#3.wav", "hat_d3.wav", "hat_d#3.wav", "hat_e3.wav", "hat_f3.wav", "hat_f#3.wav", "hat_g3.wav", "hat_g#3.wav"};
 
 
 
@@ -191,16 +191,9 @@ void setup() {
   Note_set* kick_sounds = new Note_set(kick, 36, 3, true);
   Note_set* snare_sounds = new Note_set(snare, 36, 3, true);
   Note_set* hihat_sounds = new Note_set(hihat, 36, 3, true);
+  Note_set* note_sets[NUM_SOUNDS] = {kick_sounds, snare_sounds, hihat_sounds, violin_sounds, bass_sounds, piano_sounds,};
 
-
-  /*
-  Music_key* new_key1 = new Music_key(violin_sounds, A_KEY);
-  Music_key* new_key2 = new Music_key(piano_sounds, Eb_KEY);
-  Music_key* new_key3 = new Music_key(kick_sounds, F_KEY);
-  Music_key* new_key4 = new Music_key(bass_sounds, Ab_KEY);
-  */
-
-  Sound* new_sound = new Sound(bass_sounds);
+  Sound_lib* new_sound_lib = new Sound_lib(note_sets, NUM_SOUNDS);
 
 
 
