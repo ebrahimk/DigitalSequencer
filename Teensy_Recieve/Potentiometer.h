@@ -6,7 +6,8 @@ class Potentiometer{
     int pin_num;
     int min_value;
     int range;
-    Potentiometer(int pin_num, int min_value);
+    int is_reversed;
+    Potentiometer(int pin_num, int min_value, int is_reversed);
     void set_range(int range);
     int read();
 };

@@ -49,7 +49,7 @@ AudioPlaySdWav           playSdWav14;    //xy=158.0056915283203,815.551181793212
 AudioPlaySdWav           playSdWav13;    //xy=160.0056915283203,780.5511379241943
 AudioPlaySdWav           playSdWav9;     //xy=161.00569915771484,619.5511603355408
 
-playSdWavArray AudioPlaySdWav*[16] = {&playSdWav1, &playSdWav2, &playSdWav3, &playSdWav4, &playSdWav5, &playSdWav6, &playSdWav7, &playSdWav8, &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15};
+AudioPlaySdWav* playSdWavArray[16] = {&playSdWav1, &playSdWav2, &playSdWav3, &playSdWav4, &playSdWav5, &playSdWav6, &playSdWav7, &playSdWav8, &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15};
 
 AudioMixer4              mixer1;         //xy=329.00560760498047,283.460205078125
 AudioMixer4              mixer4;         //xy=328.0056838989258,688.4602403640747
@@ -105,6 +105,7 @@ AudioConnection          patchCord39(mixer8, 0, mixer10, 3);
 AudioConnection          patchCord40(mixer7, 0, mixer9, 3);
 AudioConnection          patchCord41(mixer9, 0, i2s1, 0);
 AudioConnection          patchCord42(mixer10, 0, i2s1, 1);
+AudioControlSGTL5000     sgtl5000_1;
 
 char* violin[] = {"violin_a1.wav", "violin_a#1.wav", "violin_b1.wav", "violin_c1.wav", "violin_c#1.wav", "violin_d1.wav", "violin_d#1.wav", "violin_e1.wav", "violin_f1.wav", "violin_f#1.wav", "violin_g1.wav", "violin_g#1.wav",
                               "violin_a2.wav", "violin_a#2.wav", "violin_b2.wav", "violin_c2.wav", "violin_c#2.wav", "violin_d2.wav", "violin_d#2.wav", "violin_e2.wav", "violin_f2.wav", "violin_f#2.wav", "violin_g2.wav", "violin_g#2.wav",
@@ -140,20 +141,21 @@ char* hihat[] ={"hat_a1.wav", "hat_a#1.wav", "hat_b1.wav", "hat_c1.wav", "hat_c#
 
 
 
-Potentiometer pot1(65, 502);
-Potentiometer pot2(50, 500);
-Potentiometer pot3(64, 530);
-Potentiometer pot4(67, 523);
-Potentiometer pot5(49, 500);
-Potentiometer pot6(34, 530);
-Potentiometer pot7(33, 515);
-Potentiometer pot8(39, 520);
-Potentiometer pot9(66, 473);
-Potentiometer pot10(31, 520);
-Potentiometer pot11(32, 515);
+Potentiometer universal_pot0(65, 502, 0);
+Potentiometer universal_pot1(50, 500, 1);
+Potentiometer universal_pot2(64, 530, 0);
+Potentiometer universal_pot3(67, 523, 1);
+Potentiometer universal_pot4(49, 500, 1);
+Potentiometer view_pot0(34, 530, 1);
+Potentiometer view_pot1(33, 515, 1);
+//view_pot1 above behaves finiky, hardware issue!
+Potentiometer view_pot2(39, 520, 1);
+Potentiometer view_pot3(66, 473, 1);
+Potentiometer view_pot4(31, 520, 1);
+Potentiometer view_pot5(32, 515, 1);
 
-Potentiometer* universal_pins[NUM_UNIVERSAL_POTENTIOMETERS] = {&pot1, &pot2, &pot3, &pot4, &pot5};
-Potentiometer* config_pins[NUM_CONFIG_POTENTIOMETERS] = {&pot6, &pot7, &pot8, &pot9, &pot10, &pot11};
+Potentiometer* universal_pots[NUM_UNIVERSAL_POTENTIOMETERS] = {&universal_pot0, &universal_pot1, &universal_pot2, &universal_pot3, &universal_pot4};
+Potentiometer* view_pots[NUM_CONFIG_POTENTIOMETERS] = {&view_pot0, &view_pot1, &view_pot2, &view_pot3, &view_pot4, &view_pot5};
 
 /************LED_CONTROL_STRUCTURES***************************/
 
@@ -204,6 +206,17 @@ void setup() {
   pinMode(13, OUTPUT); // LED on pin 13
   delay(1000);
 
+
+  //SET THE RANGE FOR THE UNIVERSAL POTENTIOMETERS
+  for(int i = 0; i < 5; i++){
+    universal_pots[i]->set_range(25);
+  }
+
+  //SET THE RANGE FOR THE CONFIG POTENTIOMETERS
+  for(int i = 0; i < 6; i++){
+    view_pots[i]->set_range(25);
+  }
+
   //CONFIGURE sustain ARRAY
   for(int i =0; i< 15; i++){
      sustain[i] = 0;
@@ -215,7 +228,7 @@ void loop() {
   //POLL THE POTENTIOMETERS UNIVERSAL THEN VIEW
   //CREATE A SIMPLE POTENTIOMETER REEADING, DO THE UNIVERSAL POTS FIRST.
   int i;
-
+  Serial.println("moving on to execution line:");
 
   Serial.write(mystr, 2);   //Write to console for Debugging
   Serial6.readBytes(mystr,2);
@@ -235,6 +248,43 @@ void loop() {
     }
   }
 */
+int num;
+  num = universal_pots[0]->read();
+  Serial.print("A");
+Serial.println( num);
+num = universal_pots[1]->read();
+  Serial.print("B");
+Serial.println(num);
+num = universal_pots[2]->read();
+  Serial.print("C");
+Serial.println(num);
+num = universal_pots[3]->read();
+  Serial.print("D");
+Serial.println(num);
+num = universal_pots[4]->read();
+  Serial.print("E");
+Serial.println(num);
+num = view_pots[0]->read();
+  Serial.print("F");
+Serial.println(num);
+num = view_pots[1]->read();
+  Serial.print("G");
+Serial.println(num);
+num = view_pots[2]->read();
+  Serial.print("H");
+Serial.println(num);
+num = view_pots[3]->read();
+  Serial.print("i");
+Serial.println(num);
+num = view_pots[4]->read();
+  Serial.print("j");
+Serial.println(num);
+num = view_pots[5]->read();
+  Serial.print("k");
+Serial.println(num);
+  Serial.println("---------------------");
+delay(1000);
+
 }
 
 /*
@@ -249,45 +299,8 @@ TEENSY 3.6
 */
 
 
-/*
-     TESTING ANALOG PINS
-  int num;
-  read_pin(analog_pins[0], &num);
-    Serial.print("A");
-  Serial.println( num);
-  read_pin(analog_pins[1], &num);
-    Serial.print("B");
-  Serial.println(num);
-  read_pin(analog_pins[2], &num);
-    Serial.print("C");
-  Serial.println(num);
-  read_pin(analog_pins[3], &num);
-    Serial.print("D");
-  Serial.println(num);
-  read_pin(analog_pins[4], &num);
-    Serial.print("E");
-  Serial.println(num);
-  read_pin(analog_pins[5], &num);
-    Serial.print("F");
-  Serial.println(num);
-  read_pin(analog_pins[6], &num);
-    Serial.print("G");
-  Serial.println(num);
-  read_pin(analog_pins[7], &num);
-    Serial.print("H");
-  Serial.println(num);
-  read_pin(analog_pins[8], &num);
-    Serial.print("i");
-  Serial.println(num);
-  read_pin(analog_pins[9], &num);
-    Serial.print("j");
-  Serial.println(num);
-  read_pin(analog_pins[10], &num);
-    Serial.print("k");
-  Serial.println(num);
-    Serial.println("---------------------");
-  delay(1000);
 
+/*
   mapping _ min_val
  * 1: 11 ----- 502    65
  * 2: 24 ----- 500    (Normal pin: 50)  50
