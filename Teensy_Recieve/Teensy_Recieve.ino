@@ -5,6 +5,7 @@
 #include <SerialFlash.h>
 
 #include "Sound_lib.h"
+#include "Potentiometer.h"
 
 /****AUDIO CONNECTIONS*****/
 
@@ -27,6 +28,9 @@
 #define G_KEY 10
 #define Ab_KEY 11
 
+#define NUM_UNIVERSAL_POTENTIOMETERS 5
+#define NUM_CONFIG_POTENTIOMETERS 6
+
 // GUItool: begin automatically generated code
 AudioPlaySdWav           playSdWav4;     //xy=144.00571060180664,407.4602851867676
 AudioPlaySdWav           playSdWav1;     //xy=145.0057029724121,289.46025562286377
@@ -45,6 +49,7 @@ AudioPlaySdWav           playSdWav14;    //xy=158.0056915283203,815.551181793212
 AudioPlaySdWav           playSdWav13;    //xy=160.0056915283203,780.5511379241943
 AudioPlaySdWav           playSdWav9;     //xy=161.00569915771484,619.5511603355408
 
+playSdWavArray AudioPlaySdWav*[16] = {&playSdWav1, &playSdWav2, &playSdWav3, &playSdWav4, &playSdWav5, &playSdWav6, &playSdWav7, &playSdWav8, &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15};
 
 AudioMixer4              mixer1;         //xy=329.00560760498047,283.460205078125
 AudioMixer4              mixer4;         //xy=328.0056838989258,688.4602403640747
@@ -135,48 +140,34 @@ char* hihat[] ={"hat_a1.wav", "hat_a#1.wav", "hat_b1.wav", "hat_c1.wav", "hat_c#
 
 
 
-/**********ANALOG POTENTIOMETER INPUTS**********/
-#define NUM_UNIVERSAL_POTENTIOMETERS 5
-#define NUM_CONFIG_POTENTIOMETERS 6
+Potentiometer pot1(65, 502);
+Potentiometer pot2(50, 500);
+Potentiometer pot3(64, 530);
+Potentiometer pot4(67, 523);
+Potentiometer pot5(49, 500);
+Potentiometer pot6(34, 530);
+Potentiometer pot7(33, 515);
+Potentiometer pot8(39, 520);
+Potentiometer pot9(66, 473);
+Potentiometer pot10(31, 520);
+Potentiometer pot11(32, 515);
 
-struct Pot{
-   int pin_num;
-   int min_val;
-   int range;               //The number of different states the given potentiometer can exist in at the given moment dependant upon the session/Arrangement mode the file exists in.
-};
+Potentiometer* universal_pins[NUM_UNIVERSAL_POTENTIOMETERS] = {&pot1, &pot2, &pot3, &pot4, &pot5};
+Potentiometer* config_pins[NUM_CONFIG_POTENTIOMETERS] = {&pot6, &pot7, &pot8, &pot9, &pot10, &pot11};
 
-//Hardcode these
-struct Pot pot1 = { .pin_num = 65, .min_val = 502};
-struct Pot pot2 = { .pin_num = 50, .min_val = 500};
-struct Pot pot3 = { .pin_num = 64, .min_val = 530};
-struct Pot pot4 = { .pin_num = 67, .min_val = 523};
-struct Pot pot5 = { .pin_num = 49, .min_val = 500};
-struct Pot pot6 = { .pin_num = 34, .min_val = 530};
-struct Pot pot7 = { .pin_num = 33, .min_val = 515};
-struct Pot pot8 = { .pin_num = 39, .min_val = 520};
-struct Pot pot9 = { .pin_num = 66, .min_val = 473};
-struct Pot pot10 = {.pin_num = 31, .min_val = 520};
-struct Pot pot11 = { .pin_num = 32, .min_val = 515};
+/************LED_CONTROL_STRUCTURES***************************/
 
-struct Pot* universal_pins[NUM_UNIVERSAL_POTENTIOMETERS] = {&pot1, &pot2, &pot3, &pot4, &pot5};
-struct Pot* config_pins[NUM_CONFIG_POTENTIOMETERS] = {&pot6, &pot7, &pot8, &pot9, &pot10, &pot11};
 
 //int led_pins[6] ={16 ,17, 18, 19, 29, 30};
-
-void pot_read_pin(struct Pot* pot, int* num){
-      *num=map(analogRead(pot->pin_num), pot->min_val, 1023, 0, pot->range);
-}
 
 
 /**********COMMUNICATION BETWEEN TEENSY AND MEGA2560**********/
 
-//const char code_map_D[16][2] ={{'a','D'},{'b','D'},{'c','D'},{'d','D'},{'e','D'},{'f','D'},{'g','D'},{'h','D'},{'i','D'},{'j','D'},{'k','D'},{'l','D'},{'m','D'},{'n','D'},{'o','D'},{'p','D'}};
-//const char code_map_U[16][2] ={{'a','U'},{'b','U'},{'c','U'},{'d','U'},{'e','U'},{'f','U'},{'g','U'},{'h','U'},{'i','U'},{'j','U'},{'k','U'},{'l','U'},{'m','U'},{'n','U'},{'o','U'},{'p','U'}};
+const char code_map_D[16][2] ={{'a','D'},{'b','D'},{'c','D'},{'d','D'},{'e','D'},{'f','D'},{'g','D'},{'h','D'},{'i','D'},{'j','D'},{'k','D'},{'l','D'},{'m','D'},{'n','D'},{'o','D'},{'p','D'}};
+const char code_map_U[16][2] ={{'a','U'},{'b','U'},{'c','U'},{'d','U'},{'e','U'},{'f','U'},{'g','U'},{'h','U'},{'i','U'},{'j','U'},{'k','U'},{'l','U'},{'m','U'},{'n','U'},{'o','U'},{'p','U'}};
 
-char mystr[2]; //recieve buffer from mega 2560
-int replay[15];
-
-//INCLUDE STRUCTURES FOR COMMUNCATING FROM THE TEENSY TO THE ARDUINO
+char mystr[2];
+int sustain[15];
 
 /********** EXECUTABLE PROGRAM **************/
 
@@ -195,14 +186,6 @@ void setup() {
 
   Sound_lib* new_sound_lib = new Sound_lib(note_sets, NUM_SOUNDS);
 
-
-
-//  sound_files_constructor(&file_structure);
- // pad_constructor(&button_pad);
-  //Serial.println("This is an attempt at accessing some shit:");
-  //Serial.println(file_structure.sounds[2]->keys[0]->notes[0]);
-
-  /*
   //ENABLE SERIAL COMMUNICATION
   Serial6.begin(115200);
   Serial.begin(1200);
@@ -221,82 +204,50 @@ void setup() {
   pinMode(13, OUTPUT); // LED on pin 13
   delay(1000);
 
-  //CONFIGURE REPLAY ARRAY
+  //CONFIGURE sustain ARRAY
   for(int i =0; i< 15; i++){
-     replay[i] = 0;
+     sustain[i] = 0;
   }
-  */
-
 }
 
 
 void loop() {
-  Serial.println("moose2");
-  delay(5000);
-/*
-  for(int i = 0; i < violin_keyC.len; i++){
-    Serial.println(violin_keyC.notes[i]);
-    delay(200);
-  }
+  //POLL THE POTENTIOMETERS UNIVERSAL THEN VIEW
+  //CREATE A SIMPLE POTENTIOMETER REEADING, DO THE UNIVERSAL POTS FIRST.
+  int i;
 
-*/
-  //Serial.println("Done");
 
-  /*
-  //READ IN STATE CHANGES FROM POTENTIOMETERS
-  Serial.write(mystr, 2);
+  Serial.write(mystr, 2);   //Write to console for Debugging
   Serial6.readBytes(mystr,2);
-  Serial.write(mystr,2);
-  Serial.write("\n");
+  Serial.write(mystr,2);    //Write to console for Debugging
+  Serial.write("\n");       //Write to console for Debugging
   Serial6.flush();
-
-  for(int i = 0; i < 15; i++){
-    if (((code_map_D[i][0] == mystr[0] )&&(code_map_D[i][1] == mystr[1])) || (replay[i] == 1)){
-          replay[i] = 1;
-          playSdWavArray[i]->play(code_mapStr[i]);
+/*
+  for(i = 0; i < 15; i++){
+    if (((code_map_D[i][0] == mystr[0] )&&(code_map_D[i][1] == mystr[1])) || (sustain[i] == 1)){
+          sustain[i] = 1;
+          playSdWavArray[i]->play(PASS_SOUND_FIL_HERE);
     }
 
     if ((code_map_U[i][0] == mystr[0] )&&(code_map_U[i][1] == mystr[1])){
-          replay[i] = 0;
+          sustain[i] = 0;
           playSdWavArray[i]->stop();
     }
   }
-  */
-}
-/*Configure communication with Arduino and Teensy. So we have a button pad object for each configuration: Session, Arrangement->Tracks, Config
-*Arrangement:
-* In arrangement mode entire board will be presented blank. Then we will click a note, the note will light up to a color corresponding with its pitch in the key.
-*   The pitch is determine by polling the pitch potentiometer
-* 1: blue, ---> rainbow to 7: ( dont know how to tell the user the octave)
-*
-*Session:
-*
-*
-*Config
-*
-*
 */
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 /*
-A switch statement looking at the input of the mode pin... If it is in this mode execute these potentiometer reading functions....
-Funcitons:
- *
- * State_Wrapper():     This function will call a switch statement which will look at the mode potentiometer (pot 5). It will then call a series of update pin functions for which ever mode the synth exists in
- * Grab_Input():        This function will grab serial input data and do whatever it needs to do
- *
- */
+HIGH LEVEL FLOW OF CONTROL:
+TEENSY 3.6
+
+1) Poll Universal Pots and make stateful changes
+2) Poll View_pots and make stateful changes
+3) Send serial data out for button display changes
+4) Poll for serial button input
+5) Execute command for given input
+*/
+
 
 /*
      TESTING ANALOG PINS
