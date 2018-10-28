@@ -4,6 +4,7 @@
 #include <SD.h>
 #include <SerialFlash.h>
 
+#include "Led.h"
 #include "Sound_lib.h"
 #include "Potentiometer.h"
 
@@ -108,36 +109,36 @@ AudioConnection          patchCord42(mixer10, 0, i2s1, 1);
 AudioControlSGTL5000     sgtl5000_1;
 
 char* violin[] = {"violin_a1.wav", "violin_a#1.wav", "violin_b1.wav", "violin_c1.wav", "violin_c#1.wav", "violin_d1.wav", "violin_d#1.wav", "violin_e1.wav", "violin_f1.wav", "violin_f#1.wav", "violin_g1.wav", "violin_g#1.wav",
-                              "violin_a2.wav", "violin_a#2.wav", "violin_b2.wav", "violin_c2.wav", "violin_c#2.wav", "violin_d2.wav", "violin_d#2.wav", "violin_e2.wav", "violin_f2.wav", "violin_f#2.wav", "violin_g2.wav", "violin_g#2.wav",
-                              "violin_a3.wav", "violin_a#3.wav", "violin_b3.wav", "violin_c3.wav", "violin_c#3.wav", "violin_d3.wav", "violin_d#3.wav", "violin_e3.wav", "violin_f3.wav", "violin_f#3.wav", "violin_g3.wav", "violin_g#3.wav",
-                              "violin_a4.wav", "violin_a#4.wav", "violin_b4.wav", "violin_c4.wav", "violin_c#4.wav"};
-                              //NOTE: the last file in this array "violin_c#4.wav" does not actually exist on the SD card
+	"violin_a2.wav", "violin_a#2.wav", "violin_b2.wav", "violin_c2.wav", "violin_c#2.wav", "violin_d2.wav", "violin_d#2.wav", "violin_e2.wav", "violin_f2.wav", "violin_f#2.wav", "violin_g2.wav", "violin_g#2.wav",
+	"violin_a3.wav", "violin_a#3.wav", "violin_b3.wav", "violin_c3.wav", "violin_c#3.wav", "violin_d3.wav", "violin_d#3.wav", "violin_e3.wav", "violin_f3.wav", "violin_f#3.wav", "violin_g3.wav", "violin_g#3.wav",
+	"violin_a4.wav", "violin_a#4.wav", "violin_b4.wav", "violin_c4.wav", "violin_c#4.wav"};
+//NOTE: the last file in this array "violin_c#4.wav" does not actually exist on the SD card
 
 char* bass[] ={ "808_a1.wav", "808_a#1.wav", "808_b1.wav", "808_c1.wav", "808_c#1.wav", "808_d1.wav", "808_d#1.wav", "808_e1.wav", "808_f1.wav", "808_f#1.wav", "808_g1.wav", "808_g#1.wav",
-                            "808_a2.wav", "808_a#2.wav", "808_b2.wav","808_c2.wav", "808_c#2.wav", "808_d2.wav", "808_d#2.wav", "808_e2.wav", "808_f2.wav", "808_f#2.wav", "808_g2.wav", "808_g#2.wav",
-                            "808_a3.wav", "808_a#3.wav", "808_b3.wav", "808_c3.wav", "808_c#3.wav", "808_d3.wav", "808_d#3.wav", "808_e3.wav", "808_f3.wav", "808_f#3.wav", "808_g3.wav", "808_g#3.wav",
-                            "808_a4.wav", "808_a#4.wav", "808_b4.wav","808_c4.wav", "808_c#4.wav", "808_d4.wav", "808_d#4.wav", "808_e4.wav", "808_f4.wav", "808_f#4.wav", "808_g4.wav", "808_g#4.wav",
-                            "808_a5.wav", "808_a#5.wav", "808_b5.wav", "808_c5.wav", "808_c#5.wav", "808_d5.wav", "808_d#5.wav", "808_e5.wav", "808_f5.wav", "808_f#5.wav", "808_g5.wav", "808_g#5.wav",
-                            "808_a6.wav", "808_a#6.wav", "808_b6.wav", "808_c6.wav", "808_c#6.wav"};
+	"808_a2.wav", "808_a#2.wav", "808_b2.wav","808_c2.wav", "808_c#2.wav", "808_d2.wav", "808_d#2.wav", "808_e2.wav", "808_f2.wav", "808_f#2.wav", "808_g2.wav", "808_g#2.wav",
+	"808_a3.wav", "808_a#3.wav", "808_b3.wav", "808_c3.wav", "808_c#3.wav", "808_d3.wav", "808_d#3.wav", "808_e3.wav", "808_f3.wav", "808_f#3.wav", "808_g3.wav", "808_g#3.wav",
+	"808_a4.wav", "808_a#4.wav", "808_b4.wav","808_c4.wav", "808_c#4.wav", "808_d4.wav", "808_d#4.wav", "808_e4.wav", "808_f4.wav", "808_f#4.wav", "808_g4.wav", "808_g#4.wav",
+	"808_a5.wav", "808_a#5.wav", "808_b5.wav", "808_c5.wav", "808_c#5.wav", "808_d5.wav", "808_d#5.wav", "808_e5.wav", "808_f5.wav", "808_f#5.wav", "808_g5.wav", "808_g#5.wav",
+	"808_a6.wav", "808_a#6.wav", "808_b6.wav", "808_c6.wav", "808_c#6.wav"};
 
 char* piano[] =   {"piano_a1.wav", "piano_a#1.wav", "piano_b1.wav", "piano_c1.wav", "piano_c#1.wav", "piano_d1.wav", "piano_d#1.wav", "piano_e1.wav", "piano_f1.wav", "piano_f#1.wav", "piano_g1.wav", "piano_g#1.wav",
-                               "piano_a2.wav", "piano_a#2.wav", "piano_b2.wav", "piano_c2.wav", "piano_c#2.wav", "piano_d2.wav", "piano_d#2.wav", "piano_e2.wav", "piano_f2.wav", "piano_f#2.wav", "piano_g2.wav", "piano_g#2.wav",
-                               "piano_a3.wav", "piano_a#3.wav", "piano_b3.wav", "piano_c3.wav", "piano_c#3.wav", "piano_d3.wav", "piano_d#3.wav", "piano_e3.wav", "piano_f3.wav", "piano_f#3.wav", "piano_g3.wav", "piano_g#3.wav",
-                               "piano_a4.wav", "piano_a#4.wav", "piano_b4.wav", "piano_c4.wav", "piano_c#4.wav", "piano_d4.wav", "piano_d#4.wav", "piano_e4.wav", "piano_f4.wav", "piano_f#4.wav", "piano_g4.wav", "piano_g#4.wav",
-                               "piano_a5.wav", "piano_a#5.wav", "piano_b5.wav", "piano_c5.wav", "piano_c#5.wav", "piano_d5.wav", "piano_d#5.wav", "piano_e5.wav", "piano_f5.wav", "piano_f#5.wav", "piano_g5.wav", "piano_g#5.wav",
-                               "piano_a6.wav", "piano_a#6.wav", "piano_b6.wav", "piano_c6.wav", "piano_c#6.wav"};
+	"piano_a2.wav", "piano_a#2.wav", "piano_b2.wav", "piano_c2.wav", "piano_c#2.wav", "piano_d2.wav", "piano_d#2.wav", "piano_e2.wav", "piano_f2.wav", "piano_f#2.wav", "piano_g2.wav", "piano_g#2.wav",
+	"piano_a3.wav", "piano_a#3.wav", "piano_b3.wav", "piano_c3.wav", "piano_c#3.wav", "piano_d3.wav", "piano_d#3.wav", "piano_e3.wav", "piano_f3.wav", "piano_f#3.wav", "piano_g3.wav", "piano_g#3.wav",
+	"piano_a4.wav", "piano_a#4.wav", "piano_b4.wav", "piano_c4.wav", "piano_c#4.wav", "piano_d4.wav", "piano_d#4.wav", "piano_e4.wav", "piano_f4.wav", "piano_f#4.wav", "piano_g4.wav", "piano_g#4.wav",
+	"piano_a5.wav", "piano_a#5.wav", "piano_b5.wav", "piano_c5.wav", "piano_c#5.wav", "piano_d5.wav", "piano_d#5.wav", "piano_e5.wav", "piano_f5.wav", "piano_f#5.wav", "piano_g5.wav", "piano_g#5.wav",
+	"piano_a6.wav", "piano_a#6.wav", "piano_b6.wav", "piano_c6.wav", "piano_c#6.wav"};
 
 char* kick[] ={ "kick_a1.wav", "kick_a#1.wav", "kick_b1.wav", "kick_c1.wav", "kick_c#1.wav", "kick_d1.wav", "kick_d#1.wav", "kick_e1.wav", "kick_f1.wav", "kick_f#1.wav", "kick_g1.wav", "kick_g#1.wav",
-                            "kick_a2.wav", "kick_a#2.wav", "kick_b2.wav", "kick_c2.wav", "kick_c#2.wav", "kick_d2.wav", "kick_d#2.wav", "kick_e2.wav", "kick_f2.wav", "kick_f#2.wav", "kick_g2.wav", "kick_g#2.wav",
-                            "kick_a3.wav", "kick_a#3.wav", "kick_b3.wav", "kick_c3.wav", "kick_c#3.wav", "kick_d3.wav", "kick_d#3.wav", "kick_e3.wav", "kick_f3.wav", "kick_f#3.wav", "kick_g3.wav", "kick_g#3.wav"};
+	"kick_a2.wav", "kick_a#2.wav", "kick_b2.wav", "kick_c2.wav", "kick_c#2.wav", "kick_d2.wav", "kick_d#2.wav", "kick_e2.wav", "kick_f2.wav", "kick_f#2.wav", "kick_g2.wav", "kick_g#2.wav",
+	"kick_a3.wav", "kick_a#3.wav", "kick_b3.wav", "kick_c3.wav", "kick_c#3.wav", "kick_d3.wav", "kick_d#3.wav", "kick_e3.wav", "kick_f3.wav", "kick_f#3.wav", "kick_g3.wav", "kick_g#3.wav"};
 
 char* snare[] ={"snare_a1.wav", "snare_a#1.wav", "snare_b1.wav", "snare_c1.wav", "snare_c#1.wav", "snare_d1.wav", "snare_d#1.wav", "snare_e1.wav", "snare_f1.wav", "snare_f#1.wav", "snare_g1.wav", "snare_g#1.wav",
-                            "snare_a2.wav", "snare_a#2.wav", "snare_b2.wav", "snare_c2.wav", "snare_c#2.wav", "snare_d2.wav", "snare_d#2.wav", "snare_e2.wav", "snare_f2.wav", "snare_f#2.wav", "snare_g2.wav", "snare_g#2.wav",
-                            "snare_a3.wav", "snare_a#3.wav", "snare_b3.wav", "snare_c3.wav", "snare_c#3.wav", "snare_d3.wav", "snare_d#3.wav", "snare_e3.wav", "snare_f3.wav", "snare_f#3.wav", "snare_g3.wav", "snare_g#3.wav"};
+	"snare_a2.wav", "snare_a#2.wav", "snare_b2.wav", "snare_c2.wav", "snare_c#2.wav", "snare_d2.wav", "snare_d#2.wav", "snare_e2.wav", "snare_f2.wav", "snare_f#2.wav", "snare_g2.wav", "snare_g#2.wav",
+	"snare_a3.wav", "snare_a#3.wav", "snare_b3.wav", "snare_c3.wav", "snare_c#3.wav", "snare_d3.wav", "snare_d#3.wav", "snare_e3.wav", "snare_f3.wav", "snare_f#3.wav", "snare_g3.wav", "snare_g#3.wav"};
 
 char* hihat[] ={"hat_a1.wav", "hat_a#1.wav", "hat_b1.wav", "hat_c1.wav", "hat_c#1.wav", "hat_d1.wav", "hat_d#1.wav", "hat_e1.wav", "hat_f1.wav", "hat_f#1.wav", "hat_g1.wav", "hat_g#1.wav",
-                "hat_a2.wav", "hat_a#2.wav", "hat_b2.wav", "hat_c2.wav", "hat_c#2.wav", "hat_d2.wav", "hat_d#2.wav", "hat_e2.wav", "hat_f2.wav", "hat_f#2.wav", "hat_g2.wav", "hat_g#2.wav",
-                "hat_a3.wav", "hat_a#3.wav", "hat_b3.wav", "hat_c3.wav", "hat_c#3.wav", "hat_d3.wav", "hat_d#3.wav", "hat_e3.wav", "hat_f3.wav", "hat_f#3.wav", "hat_g3.wav", "hat_g#3.wav"};
+	"hat_a2.wav", "hat_a#2.wav", "hat_b2.wav", "hat_c2.wav", "hat_c#2.wav", "hat_d2.wav", "hat_d#2.wav", "hat_e2.wav", "hat_f2.wav", "hat_f#2.wav", "hat_g2.wav", "hat_g#2.wav",
+	"hat_a3.wav", "hat_a#3.wav", "hat_b3.wav", "hat_c3.wav", "hat_c#3.wav", "hat_d3.wav", "hat_d#3.wav", "hat_e3.wav", "hat_f3.wav", "hat_f#3.wav", "hat_g3.wav", "hat_g#3.wav"};
 
 
 
@@ -146,9 +147,9 @@ Potentiometer universal_pot1(50, 500, 1);
 Potentiometer universal_pot2(64, 530, 0);
 Potentiometer universal_pot3(67, 523, 1);
 Potentiometer universal_pot4(49, 500, 1);
+
 Potentiometer view_pot0(34, 530, 1);
-Potentiometer view_pot1(33, 515, 1);
-//view_pot1 above behaves finiky, hardware issue!
+Potentiometer view_pot1(33, 515, 1);	//view_pot1 above behaves finiky, hardware issue!
 Potentiometer view_pot2(39, 520, 1);
 Potentiometer view_pot3(66, 473, 1);
 Potentiometer view_pot4(31, 520, 1);
@@ -159,8 +160,14 @@ Potentiometer* view_pots[NUM_CONFIG_POTENTIOMETERS] = {&view_pot0, &view_pot1, &
 
 /************LED_CONTROL_STRUCTURES***************************/
 
+//one LED does the battery life and the other LED will do the mode
+int battery_leds[3] ={16, 17, 18};
+int mode_leds[3] = {19, 29, 30};
+Led battery_led(battery_leds);	//color will be white
+Led mode_led(mode_leds);	//color will be cyan
 
 //int led_pins[6] ={16 ,17, 18, 19, 29, 30};
+
 
 
 /**********COMMUNICATION BETWEEN TEENSY AND MEGA2560**********/
@@ -169,139 +176,140 @@ const char code_map_D[16][2] ={{'a','D'},{'b','D'},{'c','D'},{'d','D'},{'e','D'}
 const char code_map_U[16][2] ={{'a','U'},{'b','U'},{'c','U'},{'d','U'},{'e','U'},{'f','U'},{'g','U'},{'h','U'},{'i','U'},{'j','U'},{'k','U'},{'l','U'},{'m','U'},{'n','U'},{'o','U'},{'p','U'}};
 
 char mystr[2];
-int sustain[15];
+int sustain[16];
 
 /********** EXECUTABLE PROGRAM **************/
 
 void setup() {
-  Serial.begin(300);
-  delay(200);
-  while (!Serial) ;
-  Serial.println("Starting to construct note_sets");
-  Note_set* violin_sounds = new Note_set(violin, 40, 2, false);
-  Note_set* bass_sounds = new Note_set(bass, 65, 4, false);
-  Note_set* piano_sounds = new Note_set(piano, 65, 4, false);
-  Note_set* kick_sounds = new Note_set(kick, 36, 3, true);
-  Note_set* snare_sounds = new Note_set(snare, 36, 3, true);
-  Note_set* hihat_sounds = new Note_set(hihat, 36, 3, true);
-  Note_set* note_sets[NUM_SOUNDS] = {kick_sounds, snare_sounds, hihat_sounds, violin_sounds, bass_sounds, piano_sounds,};
+	Serial.begin(300);
+	delay(200);
+	while (!Serial) ;
+	Serial.println("Constructing sound library...");
+	Note_set* violin_sounds = new Note_set(violin, 40, 2, false);
+	Note_set* bass_sounds = new Note_set(bass, 65, 4, false);
+	Note_set* piano_sounds = new Note_set(piano, 65, 4, false);
+	Note_set* kick_sounds = new Note_set(kick, 36, 3, true);
+	Note_set* snare_sounds = new Note_set(snare, 36, 3, true);
+	Note_set* hihat_sounds = new Note_set(hihat, 36, 3, true);
 
-  Sound_lib* new_sound_lib = new Sound_lib(note_sets, NUM_SOUNDS);
+	Note_set* note_sets[NUM_SOUNDS] = {kick_sounds, snare_sounds, hihat_sounds, violin_sounds, bass_sounds, piano_sounds,};
 
-  //ENABLE SERIAL COMMUNICATION
-  Serial6.begin(115200);
-  Serial.begin(1200);
-  Serial.println("Teensy Com Port");
-  AudioMemory(8);
-  sgtl5000_1.enable();
-  sgtl5000_1.volume(.4);
-  SPI.setMOSI(SDCARD_MOSI_PIN);
-  SPI.setSCK(SDCARD_SCK_PIN);
-  if (!(SD.begin(SDCARD_CS_PIN))) {
-    while (1) {
-      Serial.println("Unable to access the SD card");
-      delay(500);
-    }
-  }
-  pinMode(13, OUTPUT); // LED on pin 13
-  delay(1000);
+	Sound_lib* new_sound_lib = new Sound_lib(note_sets, NUM_SOUNDS);
+
+	//ENABLE SERIAL COMMUNICATION
+	Serial6.begin(115200);
+	Serial.begin(1200);
+	Serial.println("Teensy Com Port");
+	AudioMemory(8);
+	sgtl5000_1.enable();
+	sgtl5000_1.volume(.4);
+	SPI.setMOSI(SDCARD_MOSI_PIN);
+	SPI.setSCK(SDCARD_SCK_PIN);
+	if (!(SD.begin(SDCARD_CS_PIN))) {
+		while (1) {
+			Serial.println("Unable to access the SD card");
+			delay(500);
+		}
+	}
+	pinMode(13, OUTPUT); // LED on pin 13
+	delay(1000);
 
 
-  //SET THE RANGE FOR THE UNIVERSAL POTENTIOMETERS
-  for(int i = 0; i < 5; i++){
-    universal_pots[i]->set_range(25);
-  }
+	//SET THE RANGE FOR THE UNIVERSAL POTENTIOMETERS
+	for(int i = 0; i < 5; i++){
+		universal_pots[i]->set_range(25);
+	}
 
-  //SET THE RANGE FOR THE CONFIG POTENTIOMETERS
-  for(int i = 0; i < 6; i++){
-    view_pots[i]->set_range(25);
-  }
+	//SET THE RANGE FOR THE CONFIG POTENTIOMETERS
+	for(int i = 0; i < 6; i++){
+		view_pots[i]->set_range(25);
+	}
 
-  //CONFIGURE sustain ARRAY
-  for(int i =0; i< 15; i++){
-     sustain[i] = 0;
-  }
+	//CONFIGURE sustain ARRAY
+	for(int i =0; i< 16; i++){
+		sustain[i] = 0;
+	}
 }
 
 
 void loop() {
-  //POLL THE POTENTIOMETERS UNIVERSAL THEN VIEW
-  //CREATE A SIMPLE POTENTIOMETER REEADING, DO THE UNIVERSAL POTS FIRST.
-  int i;
-  Serial.println("moving on to execution line:");
+	//POLL THE POTENTIOMETERS UNIVERSAL THEN VIEW
+	//CREATE A SIMPLE POTENTIOMETER REEADING, DO THE UNIVERSAL POTS FIRST.
+	Serial.println("moving on to execution line:");
 
-  Serial.write(mystr, 2);   //Write to console for Debugging
-  Serial6.readBytes(mystr,2);
-  Serial.write(mystr,2);    //Write to console for Debugging
-  Serial.write("\n");       //Write to console for Debugging
-  Serial6.flush();
-/*
-  for(i = 0; i < 15; i++){
-    if (((code_map_D[i][0] == mystr[0] )&&(code_map_D[i][1] == mystr[1])) || (sustain[i] == 1)){
-          sustain[i] = 1;
-          playSdWavArray[i]->play(PASS_SOUND_FIL_HERE);
-    }
+	Serial.write(mystr, 2);   //Write to console for Debugging
+	Serial6.readBytes(mystr,2);
+	Serial.write(mystr,2);    //Write to console for Debugging
+	Serial.write("\n");       //Write to console for Debugging
+	Serial6.flush();
+	/*
+	   for(i = 0; i < 15; i++){
+	   if (((code_map_D[i][0] == mystr[0] )&&(code_map_D[i][1] == mystr[1])) || (sustain[i] == 1)){
+	   sustain[i] = 1;
+	   playSdWavArray[i]->play(PASS_SOUND_FIL_HERE);
+	   }
 
-    if ((code_map_U[i][0] == mystr[0] )&&(code_map_U[i][1] == mystr[1])){
-          sustain[i] = 0;
-          playSdWavArray[i]->stop();
-    }
-  }
-*/
-int num;
-  num = universal_pots[0]->read();
-  Serial.print("A");
-Serial.println( num);
-num = universal_pots[1]->read();
-  Serial.print("B");
-Serial.println(num);
-num = universal_pots[2]->read();
-  Serial.print("C");
-Serial.println(num);
-num = universal_pots[3]->read();
-  Serial.print("D");
-Serial.println(num);
-num = universal_pots[4]->read();
-  Serial.print("E");
-Serial.println(num);
-num = view_pots[0]->read();
-  Serial.print("F");
-Serial.println(num);
-num = view_pots[1]->read();
-  Serial.print("G");
-Serial.println(num);
-num = view_pots[2]->read();
-  Serial.print("H");
-Serial.println(num);
-num = view_pots[3]->read();
-  Serial.print("i");
-Serial.println(num);
-num = view_pots[4]->read();
-  Serial.print("j");
-Serial.println(num);
-num = view_pots[5]->read();
-  Serial.print("k");
-Serial.println(num);
-  Serial.println("---------------------");
-delay(1000);
+	   if ((code_map_U[i][0] == mystr[0] )&&(code_map_U[i][1] == mystr[1])){
+	   sustain[i] = 0;
+	   playSdWavArray[i]->stop();
+	   }
+	   }
+	 */
+
+	int num;
+	num = universal_pots[0]->read();
+	Serial.print("A");
+	Serial.println( num);
+	num = universal_pots[1]->read();
+	Serial.print("B");
+	Serial.println(num);
+	num = universal_pots[2]->read();
+	Serial.print("C");
+	Serial.println(num);
+	num = universal_pots[3]->read();
+	Serial.print("D");
+	Serial.println(num);
+	num = universal_pots[4]->read();
+	Serial.print("E");
+	Serial.println(num);
+	num = view_pots[0]->read();
+	Serial.print("F");
+	Serial.println(num);
+	num = view_pots[1]->read();
+	Serial.print("G");
+	Serial.println(num);
+	num = view_pots[2]->read();
+	Serial.print("H");
+	Serial.println(num);
+	num = view_pots[3]->read();
+	Serial.print("i");
+	Serial.println(num);
+	num = view_pots[4]->read();
+	Serial.print("j");
+	Serial.println(num);
+	num = view_pots[5]->read();
+	Serial.print("k");
+	Serial.println(num);
+	Serial.println("---------------------");
+	delay(1000);
 
 }
 
 /*
-HIGH LEVEL FLOW OF CONTROL:
-TEENSY 3.6
+   HIGH LEVEL FLOW OF CONTROL:
+   TEENSY 3.6
 
-1) Poll Universal Pots and make stateful changes
-2) Poll View_pots and make stateful changes
-3) Send serial data out for button display changes
-4) Poll for serial button input
-5) Execute command for given input
-*/
+   1) Poll Universal Pots and make stateful changes
+   2) Poll View_pots and make stateful changes
+   3) Send serial data out for button display changes
+   4) Poll for serial button input
+   5) Execute command for given input
+ */
 
 
 
 /*
-  mapping _ min_val
+   mapping _ min_val
  * 1: 11 ----- 502    65
  * 2: 24 ----- 500    (Normal pin: 50)  50
  * 3: 10 ----- 530    64
