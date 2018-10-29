@@ -7,6 +7,7 @@
 #include "Led.h"
 #include "Sound_lib.h"
 #include "Potentiometer.h"
+#include "Button.h"
 
 /****AUDIO CONNECTIONS*****/
 
@@ -15,19 +16,6 @@
 #define SDCARD_SCK_PIN   14
 
 #define NUM_SOUNDS   6
-
-#define A_KEY 0
-#define Bb_KEY 1
-#define B_KEY 2
-#define C_KEY 3
-#define Db_KEY 4
-#define D_KEY 5
-#define Eb_KEY 6
-#define E_KEY 7
-#define F_KEY 8
-#define Gb_KEY 9
-#define G_KEY 10
-#define Ab_KEY 11
 
 #define NUM_UNIVERSAL_POTENTIOMETERS 5
 #define NUM_CONFIG_POTENTIOMETERS 6
@@ -49,8 +37,6 @@ AudioPlaySdWav           playSdWav15;    //xy=157.0056915283203,849.551157951355
 AudioPlaySdWav           playSdWav14;    //xy=158.0056915283203,815.5511817932129
 AudioPlaySdWav           playSdWav13;    //xy=160.0056915283203,780.5511379241943
 AudioPlaySdWav           playSdWav9;     //xy=161.00569915771484,619.5511603355408
-
-AudioPlaySdWav* playSdWavArray[16] = {&playSdWav1, &playSdWav2, &playSdWav3, &playSdWav4, &playSdWav5, &playSdWav6, &playSdWav7, &playSdWav8, &playSdWav9, &playSdWav10, &playSdWav11, &playSdWav12, &playSdWav13, &playSdWav14, &playSdWav15};
 
 AudioMixer4              mixer1;         //xy=329.00560760498047,283.460205078125
 AudioMixer4              mixer4;         //xy=328.0056838989258,688.4602403640747
@@ -161,44 +147,94 @@ Potentiometer* view_pots[NUM_CONFIG_POTENTIOMETERS] = {&view_pot0, &view_pot1, &
 /************LED_CONTROL_STRUCTURES***************************/
 
 //one LED does the battery life and the other LED will do the mode
-int battery_leds[3] ={16, 17, 18};
-int mode_leds[3] = {19, 29, 30};
-Led battery_led(battery_leds);	//color will be white
-Led mode_led(mode_leds);	//color will be cyan
-
+int battery_leds[3] ={35, 36, 37};
+int mode_leds[3] = {38, 29, 30};
+//initialize LED objects
+Led battery_led(battery_leds);
+Led mode_led(mode_leds);
 //int led_pins[6] ={16 ,17, 18, 19, 29, 30};
 
+/************BUTTONS *******************************************/
+static const uint8_t    color_mappings[14][3] = {
+                      {0,255,255}, //Cyan8
+                      {0,125,255}, //Ocean9
+                      {0,0,255},  //Blue10
+                      {138,43,226}, //Darek violet11
+                      {125,0,255}, //Violet12
+                      {255,0,255}, //Magenta13
+                      {255,0,125},  //Rasberry14
+                      {255,0,0}, //Red2
+                      {255,125,0}, //Orange3
+                      {255,255,0}, //Yellow4
+                      {125,255,0}, //Spring Green5
+                      {0,255,0},  //Green6
+                      {0,255,125}, //Turquiose7
+};
 
+Button button_A(&playSdWav1, 'A');
+Button button_B(&playSdWav2, 'B');
+Button button_C(&playSdWav3, 'C');
+Button button_D(&playSdWav4, 'D');
+Button button_E(&playSdWav5, 'E');
+Button button_F(&playSdWav6, 'F');
+Button button_G(&playSdWav7, 'G');
+Button button_H(&playSdWav8, 'H');
+Button button_I(&playSdWav9, 'I');
+Button button_J(&playSdWav10, 'J');
+Button button_K(&playSdWav11, 'K');
+Button button_L(&playSdWav12, 'L');
+Button button_M(&playSdWav13, 'M');
+Button button_N(&playSdWav14, 'N');
+Button button_O(&playSdWav15, 'O');
+Button button_P(&playSdWav16, 'P');
 
+Button* buttons[16] = {&button_A, &button_B, &button_C, &button_D, &button_E, &button_F, &button_G, &button_H, &button_I, &button_J, &button_K, &button_L, &button_M, &button_N, &button_O, &button_P};
 /**********COMMUNICATION BETWEEN TEENSY AND MEGA2560**********/
 
 const char code_map_D[16][2] ={{'a','D'},{'b','D'},{'c','D'},{'d','D'},{'e','D'},{'f','D'},{'g','D'},{'h','D'},{'i','D'},{'j','D'},{'k','D'},{'l','D'},{'m','D'},{'n','D'},{'o','D'},{'p','D'}};
 const char code_map_U[16][2] ={{'a','U'},{'b','U'},{'c','U'},{'d','U'},{'e','U'},{'f','U'},{'g','U'},{'h','U'},{'i','U'},{'j','U'},{'k','U'},{'l','U'},{'m','U'},{'n','U'},{'o','U'},{'p','U'}};
 
+char state_str[16];
+
 char mystr[2];
+
+uint8_t button_states1[48] ={0, 255, 255, 0, 125, 255, 0, 0, 255, 138, 43, 226, 125, 0, 255, 255, 0, 255, 255, 0, 125, 255, 0, 0, 255, 125, 0, 255, 255, 0, 125, 255, 0, 0, 255, 0, 0, 255, 125, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+uint8_t button_states2[48] = {255, 0, 255, 255, 255, 0, 255, 0, 255, 255, 255, 0, 255, 0, 255, 255, 255, 0, 255, 0, 255, 255, 255, 0, 255, 0, 255, 255, 255, 0, 255, 0, 255, 255, 255, 0, 255, 0, 255, 255, 255, 0, 255, 0, 255, 255, 255, 0};
+uint8_t button_states3[48];
+
 int sustain[16];
+
+//SPISettings settingsA(8000000, MSBFIRST, SPI_MODE0);
 
 /********** EXECUTABLE PROGRAM **************/
 
 void setup() {
-	Serial.begin(300);
-	delay(200);
-	while (!Serial) ;
-	Serial.println("Constructing sound library...");
-	Note_set* violin_sounds = new Note_set(violin, 40, 2, false);
-	Note_set* bass_sounds = new Note_set(bass, 65, 4, false);
-	Note_set* piano_sounds = new Note_set(piano, 65, 4, false);
-	Note_set* kick_sounds = new Note_set(kick, 36, 3, true);
-	Note_set* snare_sounds = new Note_set(snare, 36, 3, true);
-	Note_set* hihat_sounds = new Note_set(hihat, 36, 3, true);
-
-	Note_set* note_sets[NUM_SOUNDS] = {kick_sounds, snare_sounds, hihat_sounds, violin_sounds, bass_sounds, piano_sounds,};
-
-	Sound_lib* new_sound_lib = new Sound_lib(note_sets, NUM_SOUNDS);
-
 	//ENABLE SERIAL COMMUNICATION
 	Serial6.begin(115200);
+
+
+/*
+	pinMode(20, OUTPUT); //this is the slave select pin, make sure it is always an output
+	SPI2.begin();
+	pinMode(43, OUTPUT);	//digital pin 43 on Teensy will be used to enable the slave device.
+  digitalWrite(43, HIGH); // because we only have two devices, we will continuoulsy enable the Arduino Mega
+*/
+
+
 	Serial.begin(1200);
+	while (!Serial) ;
+
+ //***************************************************************
+	//configure buttons state arrays for testing, how responsive can we make this with USART
+	uint8_t i;
+	Serial.println("\n");
+	for(i = 0; i < 48; i++){
+		button_states3[i] = 0;
+	}
+ //***************************************************************
+
+
+
 	Serial.println("Teensy Com Port");
 	AudioMemory(8);
 	sgtl5000_1.enable();
@@ -233,66 +269,111 @@ void setup() {
 
 
 void loop() {
-	//POLL THE POTENTIOMETERS UNIVERSAL THEN VIEW
-	//CREATE A SIMPLE POTENTIOMETER REEADING, DO THE UNIVERSAL POTS FIRST.
-	Serial.println("moving on to execution line:");
+	Serial.println("Constructing sound library...");
+	Note_set* violin_sounds = new Note_set(violin, 40, 2, false);
+	Note_set* bass_sounds = new Note_set(bass, 65, 4, false);
+	Note_set* piano_sounds = new Note_set(piano, 65, 4, false);
+	Note_set* kick_sounds = new Note_set(kick, 36, 3, true);
+	Note_set* snare_sounds = new Note_set(snare, 36, 3, true);
+	Note_set* hihat_sounds = new Note_set(hihat, 36, 3, true);
 
-	Serial.write(mystr, 2);   //Write to console for Debugging
-	Serial6.readBytes(mystr,2);
-	Serial.write(mystr,2);    //Write to console for Debugging
-	Serial.write("\n");       //Write to console for Debugging
-	Serial6.flush();
-	/*
-	   for(i = 0; i < 15; i++){
+	Note_set* note_sets[NUM_SOUNDS] = {kick_sounds, snare_sounds, hihat_sounds, violin_sounds, bass_sounds, piano_sounds,};
+
+	Sound_lib* new_sound_lib = new Sound_lib(note_sets, NUM_SOUNDS);
+	while(1){
+			//POLL THE POTENTIOMETERS UNIVERSAL THEN VIEW
+			//CREATE A SIMPLE POTENTIOMETER REEADING, DO THE UNIVERSAL POTS FIRST.
+
+
+	//		Serial.write(mystr, 2);   //Write to console for Debugging
+			Serial6.readBytes(mystr,2);
+			Serial.write(mystr,2);    //Write to console for Debugging
+			Serial.write("\n");       //Write to console for Debugging
+			Serial6.flush();
+
+			mystr[0] = 'x';
+			mystr[1] = 'x';
+
+
+
+			if(universal_pots[0]->read() > 10){
+				Serial.println("BUTTON STATE CHANGED 1");
+				Serial6.write(button_states1, 48);
+				Serial6.flush();
+			}
+			else if(universal_pots[1]->read() > 10){
+				Serial.println("BUTTON STATE CHANGED 2");
+				Serial6.write(button_states2, 48);
+				Serial6.flush();
+			}
+			else{
+				Serial.println("no color: ");
+				Serial6.write(button_states3, 48);
+				Serial6.flush();
+			}
+
+
+
+/*
+		int i, j, count = 0;
+		digitalWrite(43, LOW);
+		SPI2.beginTransaction(settingsA);
+		//16 buttons and for each button we have unique RGB values
+		for(i = 0; i < 16; i++){
+			for(j = 0; j < 3; j++){
+				SPI2.transfer(buttons[count]->RGB[j]);
+				Serial.print("Data transferred: ");
+				Serial.println(buttons[count]->RGB[j]);
+			}
+			count++;
+		}
+		SPI2.endTransaction();
+		digitalWrite(43, HIGH);
+*/
+
+
+
+
+
+
+
+
+/*
+	int i;
+	for(i = 0; i < 15; i++){
 	   if (((code_map_D[i][0] == mystr[0] )&&(code_map_D[i][1] == mystr[1])) || (sustain[i] == 1)){
-	   sustain[i] = 1;
-	   playSdWavArray[i]->play(PASS_SOUND_FIL_HERE);
+	   		sustain[i] = 1;
+	   		playSdWavArray[i]->play();
 	   }
 
 	   if ((code_map_U[i][0] == mystr[0] )&&(code_map_U[i][1] == mystr[1])){
-	   sustain[i] = 0;
-	   playSdWavArray[i]->stop();
+	   		sustain[i] = 0;
+	   		playSdWavArray[i]->stop();
 	   }
-	   }
-	 */
+	 }
+	*/
 
-	int num;
-	num = universal_pots[0]->read();
-	Serial.print("A");
-	Serial.println( num);
-	num = universal_pots[1]->read();
-	Serial.print("B");
-	Serial.println(num);
-	num = universal_pots[2]->read();
-	Serial.print("C");
-	Serial.println(num);
-	num = universal_pots[3]->read();
-	Serial.print("D");
-	Serial.println(num);
-	num = universal_pots[4]->read();
-	Serial.print("E");
-	Serial.println(num);
-	num = view_pots[0]->read();
-	Serial.print("F");
-	Serial.println(num);
-	num = view_pots[1]->read();
-	Serial.print("G");
-	Serial.println(num);
-	num = view_pots[2]->read();
-	Serial.print("H");
-	Serial.println(num);
-	num = view_pots[3]->read();
-	Serial.print("i");
-	Serial.println(num);
-	num = view_pots[4]->read();
-	Serial.print("j");
-	Serial.println(num);
-	num = view_pots[5]->read();
-	Serial.print("k");
-	Serial.println(num);
-	Serial.println("---------------------");
-	delay(1000);
 
+
+	/*
+		 int num;
+		 num = universal_pots[0]->read();
+		 Serial.print("A");
+		 Serial.println( num);
+		 num = universal_pots[1]->read();
+		 Serial.print("B");
+		 Serial.println(num);
+		 */
+
+	 //		Serial.println(new_sound_lib->sounds[0]->keys[0]->notes[0]);
+	//		Serial.println("moose");
+
+	 //Write the color out to the LEDS
+	  	int color_battery[3] = {0, 255, 255};
+	  	int color_mode[3] = {255, 51, 255};
+	  	battery_led.set_color(color_battery);
+	 		mode_led.set_color(color_mode);
+	}
 }
 
 /*
@@ -304,6 +385,43 @@ void loop() {
    3) Send serial data out for button display changes
    4) Poll for serial button input
    5) Execute command for given input
+
+	 int num;
+	 num = universal_pots[0]->read();
+	 Serial.print("A");
+	 Serial.println( num);
+	 num = universal_pots[1]->read();
+	 Serial.print("B");
+	 Serial.println(num);
+	 num = universal_pots[2]->read();
+	 Serial.print("C");
+	 Serial.println(num);
+	 num = universal_pots[3]->read();
+	 Serial.print("D");
+	 Serial.println(num);
+	 num = universal_pots[4]->read();
+	 Serial.print("E");
+	 Serial.println(num);
+	 num = view_pots[0]->read();
+	 Serial.print("F");
+	 Serial.println(num);
+	 num = view_pots[1]->read();
+	 Serial.print("G");
+	 Serial.println(num);
+	 num = view_pots[2]->read();
+	 Serial.print("H");
+	 Serial.println(num);
+	 num = view_pots[3]->read();
+	 Serial.print("i");
+	 Serial.println(num);
+	 num = view_pots[4]->read();
+	 Serial.print("j");
+	 Serial.println(num);
+	 num = view_pots[5]->read();
+	 Serial.print("k");
+	 Serial.println(num);
+	 Serial.println("---------------------");
+	 delay(1000);
  */
 
 
@@ -321,4 +439,33 @@ void loop() {
  * 9: 21 ----- 473   66
  * 10: 12  ----- 520  31
  * 11: 13  ----- 515   32
- */
+
+
+
+ //SWT-GND
+ static const uint8_t btnselpins[4]   = {46,42,47,43};
+
+ //Switch
+ static const uint8_t btnreadpins[4] = {22,23,24,25};
+
+ //LED-GND (Good)
+ static const uint8_t ledselpins[4]   = {48,44,49,45};
+
+
+ /*
+ //Convert pin numbers to their respective port mappings for faster I/O C-style functions
+ //SWT-GND
+ static const uint8_t btnselpins[4]   = {PL3,PL7,PL2,PL6};
+
+ //Switch
+ static const uint8_t btnreadpins[4] = {PA0,PA1,PA2,PA3};
+
+ //LED-GND (Good)
+ static const uint8_t ledselpins[4]   = {PL1,PL5,PL0,PL4};
+
+
+    Serial.println("Recieved Data:");   //Write to console for Debugging
+     Serial1.readBytes(mystr,2);
+     Serial.write(mystr,2);    //Write to console for Debugging
+     Serial.write("\n");       //Write to console for Debugging
+     Serial1.flush();*/
